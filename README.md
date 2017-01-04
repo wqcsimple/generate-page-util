@@ -38,6 +38,4 @@ options.
 
 #### return files
 
-Type: `Array` or `Boolean`
-
 Generated files or exists

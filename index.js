@@ -2,18 +2,19 @@ const fs = require('fs')
 const path = require('path')
 const mkdirp = require('mkdirp')
 
-module.exports = function generatePage(options) {
+function generatePage(options) {
     if (typeof options !== 'object') throw new Error('options must be a object.')
 
     options = Object.assign({
-        name: 'index',
+        root: "",
+        name: "index",
         json: false,
         less: false,
         scss: false,
         css: false,
         xml: false,
         html: true
-    }, options)
+    }, options);
 
     if (!options.root) throw new Error('You must specify a root directory.')
 
@@ -26,57 +27,43 @@ module.exports = function generatePage(options) {
     const results = []
 
     // js
-    const jsTemplate = require('./templates/js')
-    const jsPath = path.resolve(pageRoot, options.name + '.js')
-    fs.writeFileSync(jsPath, jsTemplate(options))
-    results.push(jsPath)
+    results.push(processTemplate(pageRoot, options, 'js'));
 
     // xml
     if (options.xml) {
-        const xmlTemplate = require('./templates/xml')
-        const xmlPath = path.resolve(pageRoot, options.name + '.xml')
-        fs.writeFileSync(xmlPath, xmlTemplate(options))
-        results.push(xmlPath)
+        results.push(processTemplate(pageRoot, options, 'xml'))
     }
 
     // html
     if (options.html) {
-        const htmlTemplate = require('./templates/html')
-        const htmlPath = path.resolve(pageRoot, options.name + '.html')
-        console.log('whis');
-        console.log(options);
-        fs.writeFileSync(htmlPath, htmlTemplate(options))
-        results.push(htmlPath)
+        results.push(processTemplate(pageRoot, options, 'html'))
     }
 
     // less
     if (options.less) {
-        const lessTemplate = require('./templates/less')
-        const lessPath = path.resolve(pageRoot, options.name + '.less')
-        fs.writeFileSync(lessPath, lessTemplate(options))
-        results.push(lessPath)
+        results.push(processTemplate(pageRoot, options, 'less'))
     }
     // scss
     if (options.scss) {
-        const scssTemplate = require('./templates/scss')
-        const scssPath = path.resolve(pageRoot, options.name + '.scss')
-        fs.writeFileSync(scssPath, scssTemplate(options))
-        results.push(scssPath)
+        results.push(processTemplate(pageRoot, options, 'scss'))
     }
     // css
     if (options.css) {
-        const cssTemplate = require('./templates/css')
-        const cssPath = path.resolve(pageRoot, options.name + '.css')
-        fs.writeFileSync(cssPath, cssTemplate(options))
-        results.push(cssPath)
+        results.push(processTemplate(pageRoot, options, 'css'))
     }
     // json
     if (options.json) {
-        const jsonTemplate = require('./templates/json')
-        const jsonPath = path.resolve(pageRoot, options.name + '.json')
-        fs.writeFileSync(jsonPath, jsonTemplate(options))
-        results.push(jsonPath)
+        results.push(processTemplate(pageRoot, options, 'json'))
     }
 
     return results
 }
+
+function processTemplate(pageRoot, options, type) {
+    const template = require('./templates/' + type);
+    const templatePath = path.resolve(pageRoot, options.name + "." + type);
+    fs.writeFileSync(templatePath, template(options));
+    return templatePath;
+}
+
+module.exports = generatePage;
