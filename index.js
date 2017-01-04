@@ -10,21 +10,24 @@ function generatePage(options) {
         name: "index",
         json: false,
         less: false,
-        scss: false,
+        scss: true,
         css: false,
         xml: false,
-        html: true
+        html: true,
+        pathName: "",
+        controller: "",
+        templateType: "wx",  // wx angular-1
     }, options);
 
-    if (!options.root) throw new Error('You must specify a root directory.')
+    if (!options.root) throw new Error('You must specify a root directory.');
 
-    const pageRoot = path.resolve(options.root, options.name)
+    const pageRoot = path.resolve(options.root, options.pathName || options.name);
 
-    if (fs.existsSync(pageRoot)) return false
+    if (fs.existsSync(pageRoot)) return false;
 
-    mkdirp.sync(pageRoot)
+    mkdirp.sync(pageRoot);
 
-    const results = []
+    const results = [];
 
     // js
     results.push(processTemplate(pageRoot, options, 'js'));
@@ -60,7 +63,7 @@ function generatePage(options) {
 }
 
 function processTemplate(pageRoot, options, type) {
-    const template = require('./templates/' + type);
+    const template = require(`./templates/${options.templateType}/` + type);
     const templatePath = path.resolve(pageRoot, options.name + "." + type);
     fs.writeFileSync(templatePath, template(options));
     return templatePath;
