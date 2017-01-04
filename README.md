@@ -6,7 +6,9 @@
 ## Install
 
 ```
-
+"dependencies": {
+    "generate-page-util": "git@github.com:wqcsimple/generate-page-util.git"
+  }
 ```
 
 
