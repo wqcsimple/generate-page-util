@@ -7,7 +7,7 @@
 
 ```
 "dependencies": {
-    "generate-page-util": "git@github.com:wqcsimple/generate-page-util.git"
+    "generate-page-util": "https://github.com/wqcsimple/generate-page-util.git"
   }
 ```
 
