@@ -1,28 +1,37 @@
 /**
  * Created by whis on 1/4/17.
  */
-const generatePage = require('../')
+const generatePage = require('../index')
 
-const angularFiles = generatePage({
-    root: __dirname,
+let angularFiles = generatePage({
+    root: __dirname + "/../src/angular",
     name: "admin-detail",
     pathName: "admin",
-    controller: "AdminDetailController",
-    scss: true,
-    html: true,
-    // templateType: "wx",
+    params: {
+        controller: "AdminDetailController"
+    },
+    fileTypes: ['scss', 'html', 'js'],
     templateType: "angular-1"
 });
 
-console.log(angularFiles);
-
-const wxFiles = generatePage({
-    root: __dirname,
+let wxFiles = generatePage({
+    root: __dirname + "/../src/wx",
     name: "whis",
-    scss: true,
-    html: true,
-    json: true,
+    fileTypes: ['scss', 'html', 'json', 'js'],
     templateType: "wx",
 });
 
-console.log(wxFiles);
+
+let vueFiles = generatePage({
+    root: __dirname + "/../src/views",
+    name: "list",
+    pathName: "waybill",
+    fileTypes: ['vue'],
+    templateType: "vue"
+});
+
+// console.log(angularFiles);
+
+// console.log(wxFiles);
+
+// console.log(vueFiles);

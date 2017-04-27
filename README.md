@@ -1,6 +1,6 @@
-# generate-weapp-page
+# generate-page-util
 
-> Auto generate page
+> Auto generate page util
 
 
 ## Install
@@ -13,31 +13,31 @@
 
 
 ## Usage
-
+> 详细用法见test/index.js
 ```js
-const generatePage = require('generate-weapp-page')
+
+const generatePage = require('generate-page-util')
 
 const files = generatePage({
-  name: 'index',
-  json: false,
-  less: true,
-  scss: false,
-  css: false
+      root: __dirname + "/../src/angular",
+      name: "admin-detail",
+      pathName: "admin",
+      params: {
+          controller: "AdminDetailController"
+      },
+      fileTypes: ['scss', 'html', 'js'],
+      templateType: "vue"
 })
+
 console.log(files)
+
 ```
 
-
-## Node.js API
-
-### generatePage(options, callback)
-
-#### options
-
-Type: `Object`
-
-options.
-
-#### return files
-
-Generated files or exists
+| 参数 | 意义  | 可选值 |
+| ------------ | ------------ | ------------ |
+|  root | 生成文件根目录  | `__dirname` |
+|  name | 生成文件名 |   |
+|  pathName | 根目录下子目录 | 可为空  |
+|  params | 模板中参数 | 可为空  |
+|  fileTypes | 需要生成文件的参数 | js, json, less, scss, css, xml, html, vue  |
+|  templateType | 需要生成的文件模板类型 | vue, wx, angular-1  |

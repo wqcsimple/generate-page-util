@@ -1,71 +1,66 @@
-const fs = require('fs')
-const path = require('path')
-const mkdirp = require('mkdirp')
+const fs        = require('fs');
+const path      = require('path');
+const mkdirp    = require('mkdirp');
+const Util      = require('./lib/util');
+const Log       = require('./lib/logger');
+
+// js: false,
+// json: false,
+// less: false,
+// scss: false,
+// css: false,
+// xml: false,
+// html: false,
+// vue: false,
 
 function generatePage(options) {
-    if (typeof options !== 'object') throw new Error('options must be a object.')
+    if (typeof options !== 'object') {
+        Log.e('options must be a object.');
+        return false;
+    }
 
     options = Object.assign({
         root: "",
-        name: "index",
-        json: false,
-        less: false,
-        scss: true,
-        css: false,
-        xml: false,
-        html: true,
+        name: "",
         pathName: "",
-        controller: "",
-        templateType: "wx",  // wx angular-1
+        params: {},
+        fileTypes: [],
+        templateType: "",  // wx angular-1
     }, options);
 
-    if (!options.root) throw new Error('You must specify a root directory.');
-
-    const pageRoot = path.resolve(options.root, options.pathName || options.name);
-
-    if (fs.existsSync(pageRoot)) return false;
-
-    mkdirp.sync(pageRoot);
-
-    const results = [];
-
-    // js
-    results.push(processTemplate(pageRoot, options, 'js'));
-
-    // xml
-    if (options.xml) {
-        results.push(processTemplate(pageRoot, options, 'xml'))
+    if (!Util.containsKey(options, ['root']) && !options.root) {
+        Log.e("You must specify a root directory.");
+        return false;
     }
 
-    // html
-    if (options.html) {
-        results.push(processTemplate(pageRoot, options, 'html'))
+    let pageRoot = path.resolve(options.root, options.pathName);
+
+    // 判断目录是否已经创建
+    if (!fs.existsSync(pageRoot)) {
+        mkdirp.sync(pageRoot);
     }
 
-    // less
-    if (options.less) {
-        results.push(processTemplate(pageRoot, options, 'less'))
+    if (!Util.containsKey(options, ['fileTypes']) && options.fileTypes.length <= 0) {
+        Log.e("options file types not be empty!");
+        return false;
     }
-    // scss
-    if (options.scss) {
-        results.push(processTemplate(pageRoot, options, 'scss'))
-    }
-    // css
-    if (options.css) {
-        results.push(processTemplate(pageRoot, options, 'css'))
-    }
-    // json
-    if (options.json) {
-        results.push(processTemplate(pageRoot, options, 'json'))
-    }
+
+    let results = [];
+    options.fileTypes.map(item => {
+        results.push(processTemplate(pageRoot, options, item.toLowerCase()));
+    });
 
     return results
 }
 
 function processTemplate(pageRoot, options, type) {
-    const template = require(`./templates/${options.templateType}/` + type);
-    const templatePath = path.resolve(pageRoot, options.name + "." + type);
-    fs.writeFileSync(templatePath, template(options));
+    let template = require(`./template/${options.templateType}/` + type);
+    let templatePath = path.resolve(pageRoot, options.name + "." + type);
+    if (fs.existsSync(templatePath)) {
+        Log.i(templatePath + " exists");
+    } else {
+        fs.writeFileSync(templatePath, template(options.params));
+    }
     return templatePath;
 }
 
