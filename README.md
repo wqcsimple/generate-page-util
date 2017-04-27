@@ -16,9 +16,9 @@
 > 详细用法见test/index.js
 ```js
 
-const generatePage = require('generate-page-util')
+let generatePage = require('generate-page-util')
 
-const files = generatePage({
+let files = generatePage({
       root: __dirname + "/../src/angular",
       name: "admin-detail",
       pathName: "admin",
