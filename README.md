@@ -43,5 +43,5 @@ console.log(files)
 
 
 
-# Features
+## Features
 - Support for template customization
