@@ -11,7 +11,6 @@
   }
 ```
 
-
 ## Usage
 > 详细用法见test/index.js
 ```js
@@ -41,3 +40,8 @@ console.log(files)
 |  params | 模板中参数 | 可为空  |
 |  fileTypes | 需要生成文件的参数 | js, json, less, scss, css, xml, html, vue  |
 |  templateType | 需要生成的文件模板类型 | vue, wx, angular-1  |
+
+
+
+# Features
+- Support for template customization
