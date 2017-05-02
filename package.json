@@ -1,6 +1,6 @@
 {
   "name": "generate-page-util",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "generate-page-util",
   "main": "index.js",
   "scripts": {
