@@ -13,6 +13,8 @@ module.exports = options => `
 
             }
         },
+        watch: {
+        },
         mounted: function () {
         },
         methods: {
