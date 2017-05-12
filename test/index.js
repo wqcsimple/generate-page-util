@@ -24,10 +24,11 @@ let wxFiles = generatePage({
 
 let vueFiles = generatePage({
     root: __dirname + "/../src/views",
-    name: "list",
+    name: "waybill-list",
     pathName: "waybill",
     fileTypes: ['vue'],
-    templateType: "vue"
+    templateType: "vue",
+    templatePath: ''
 });
 
 // console.log(angularFiles);

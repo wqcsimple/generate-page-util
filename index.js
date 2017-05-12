@@ -1,8 +1,22 @@
 const fs        = require('fs');
 const path      = require('path');
 const mkdirp    = require('mkdirp');
+const colors    = require('colors');
 const Util      = require('./lib/util');
 const Log       = require('./lib/logger');
+
+colors.setTheme({
+    silly: 'rainbow',
+    input: 'grey',
+    verbose: 'cyan',
+    prompt: 'grey',
+    data: 'grey',
+    help: 'cyan',
+    warn: 'yellow',
+    debug: 'blue',
+    success: 'green',
+    error: 'red'
+});
 
 // js: false,
 // json: false,
@@ -26,6 +40,7 @@ function generatePage(options) {
         params: {},
         fileTypes: [],
         templateType: "",  // wx angular-1
+        templatePath: "", // user template path
     }, options);
 
     if (!Util.containsKey(options, ['root']) && !options.root) {
@@ -54,14 +69,18 @@ function generatePage(options) {
 }
 
 function processTemplate(pageRoot, options, type) {
-    let template = require(`./template/${options.templateType}/` + type);
-    let templatePath = path.resolve(pageRoot, options.name + "." + type);
-    if (fs.existsSync(templatePath)) {
-        Log.i(templatePath + " exists");
+    let templatePath = options.templatePath ? options.templatePath : __dirname + '/template';
+    let template = require(`${templatePath}/${options.templateType}/` + type);
+
+    let outPath = path.resolve(pageRoot, options.name + "." + type);
+
+    if (fs.existsSync(outPath)) {
+        Log.i(outPath + " [exists]".error);
     } else {
-        fs.writeFileSync(templatePath, template(options.params));
+        fs.writeFileSync(outPath, template(options.params));
+        Log.i(outPath + " [create success]".success);
     }
-    return templatePath;
+    return outPath;
 }
 
 module.exports = generatePage;

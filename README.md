@@ -25,7 +25,8 @@ let files = generatePage({
           controller: "AdminDetailController"
       },
       fileTypes: ['scss', 'html', 'js'],
-      templateType: "vue"
+      templateType: "vue",
+      templatePath: "",
 })
 
 console.log(files)
@@ -40,6 +41,7 @@ console.log(files)
 |  params | 模板中参数 | 可为空  |
 |  fileTypes | 需要生成文件的参数 | js, json, less, scss, css, xml, html, vue  |
 |  templateType | 需要生成的文件模板类型 | vue, wx, angular-1  |
+|  templatePath | 用户自定义模板路径 | 默认为空，`__dirname + '/template'`  |
 
 
 

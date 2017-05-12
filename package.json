@@ -1,6 +1,6 @@
 {
   "name": "generate-page-util",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "generate-page-util",
   "main": "index.js",
   "scripts": {
@@ -20,8 +20,9 @@
   },
   "homepage": "https://github.com/wqcsimple/generate-page-util#readme",
   "dependencies": {
+    "colors": "^1.1.2",
+    "locutus": "^2.0.5",
     "mkdirp": "^0.5.1",
-    "winston": "^2.2.0",
-    "locutus": "^2.0.5"
+    "winston": "^2.2.0"
   }
 }
