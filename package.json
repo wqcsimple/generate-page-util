@@ -21,8 +21,12 @@
   "homepage": "https://github.com/wqcsimple/generate-page-util#readme",
   "dependencies": {
     "colors": "^1.1.2",
-    "locutus": "^2.0.5",
+    "ejs": "^2.5.7",
+    "locutus": "^2.0.9",
     "mkdirp": "^0.5.1",
-    "winston": "^2.2.0"
+    "mysql": "^2.15.0",
+    "mysql2": "^1.5.2",
+    "sequelize": "^4.33.4",
+    "winston": "^2.4.0"
   }
 }

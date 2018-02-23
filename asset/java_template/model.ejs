@@ -1,0 +1,58 @@
+package com.pinjia.model
+
+import com.dix.base.core.Core
+import com.dix.base.common.Const
+import com.dix.base.exception.NotExistsException
+import com.dix.base.model.BaseModel
+import com.dix.base.model.Model
+import com.fasterxml.jackson.annotation.JsonProperty
+
+@Model(tableName = "<%= tableName %>")
+class <%= modelName %> : BaseModel() {
+
+    <% fieldList.forEach(function (item) { %>@get:JsonProperty("<%= item['jsonName'] %>") var <%= item['modelName'] %>: <%= item['dataType'] %> = <%- item['dataTypeValue'] %>
+    <% }); %>
+
+    override fun ID(): Long? {
+        return id
+    }
+
+    override fun keys(): Array<String> {
+        return arrayOf(<%- fieldString %>)
+    }
+
+    override fun basicKeys(): Array<String> {
+        return arrayOf(<%- fieldString %>)
+    }
+
+    override fun detailKeys(): Array<String> {
+        return arrayOf(<%- fieldString %>)
+    }
+
+    override fun process(model: Any, keys: Array<String>?): Map<String, Any>? {
+        val map = Core.processModel(model, keys)
+
+        if (map != null)
+        {
+
+        }
+
+        return map
+    }
+
+    companion object {
+
+        fun findById(id: Long?): <%= modelName %>? {
+            return Core.Q().findById(<%= modelName %>::class.java, id)
+        }
+
+        fun findOrFail(id: Long?): <%= modelName %> {
+            return findById(id) ?: throw NotExistsException()
+        }
+
+        fun getRawById(id: Long?): Map<String, Any>? {
+            val data = findById(id) ?: return null
+            return data.process()
+        }
+    }
+}
