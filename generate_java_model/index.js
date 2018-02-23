@@ -67,7 +67,7 @@ function generateModel(dbConfig) {
                 mkdirp.sync(globalDbCfg.writePath)
             }
 
-            Util.writeFile(`${globalDbCfg.writePath}/${data.modelName}.java`, renderData, {mode: 0o755})
+            Util.writeFile(`${globalDbCfg.writePath}/${data.modelName}.kt`, renderData, {mode: 0o755})
         })
         .catch(err => {
             Log.e(err)
