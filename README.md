@@ -17,7 +17,7 @@
 > 详细用法见test/generate_page_test.js
 ```js
 
-let generatePage = require('generate-page-util')
+let generatePage = require('generate-page-util').generatePage
 
 let files = generatePage({
       root: __dirname + "/../src/angular",
@@ -48,7 +48,7 @@ console.log(files)
 ### 生成java model
 > 详细用法见test/generate_model_test.js
 ```js
-const generateModel = require('generate-page-util');
+const generateModel = require('generate-page-util').generateModel;
 
 let dbConfig = {
     host: "",               // 数据库地址
