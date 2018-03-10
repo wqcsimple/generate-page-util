@@ -172,11 +172,13 @@ and
 
     formatJsonModelName: function (modelName) {
         let arr = modelName.split('_');
-        if (arr.length === 1) {
+        if (arr.length <= 1) {
             return arr.join('');
+        } else {
+            for (let i = 1; i < arr.length; i++) {
+                arr[i] = Util.firstUpperCase(arr[i])
+            }
         }
-
-        arr[1] = Util.firstUpperCase(arr[1]);
 
         return arr.join('');
     }
