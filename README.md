@@ -6,9 +6,7 @@
 ## Install
 
 ```
-"dependencies": {
-    "generate-page-util": "git+https://github.com/wqcsimple/generate-page-util.git"
-  }
+npm install generate-page-util --save
 ```
 
 ## Usage
