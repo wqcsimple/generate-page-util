@@ -139,8 +139,6 @@ and
     },
 
     formatDataType: function (dataType) {
-
-        console.log(dataType, 'whis')
         let typeList = {
             "varchar": 'String',
             "int": 'Int',
