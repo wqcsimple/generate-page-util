@@ -139,12 +139,15 @@ and
     },
 
     formatDataType: function (dataType) {
+
+        console.log(dataType, 'whis')
         let typeList = {
             "varchar": 'String',
             "int": 'Int',
             "bigint": "Long",
             "double": 'Double',
-            "text": "String"
+            "text": "String",
+            "longtext": "String",
         };
 
         return typeList[dataType]
