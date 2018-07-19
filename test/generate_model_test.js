@@ -9,8 +9,16 @@ let dbConfig = {
     user: "root",
     password: "7",
     database: "yeneiren",
-    table: "message",
+    table: ['message', 'user'],
     writePath: `${__dirname}/ejs`
 };
 
 generateModel(dbConfig);
+
+
+
+// let a = '1';
+// let b = ['1'];
+//
+// console.log(typeof  a)
+// console.log(Array.isArray(b))

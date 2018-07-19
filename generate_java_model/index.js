@@ -7,6 +7,21 @@ const Util = require('../lib/util');
 const fs   = require('fs');
 const mkdirp    = require('mkdirp');
 const Sequelize = require('sequelize');
+const colors    = require('colors');
+
+// colors config
+colors.setTheme({
+    silly: 'rainbow',
+    input: 'grey',
+    verbose: 'cyan',
+    prompt: 'grey',
+    data: 'grey',
+    help: 'cyan',
+    warn: 'yellow',
+    debug: 'blue',
+    success: 'green',
+    error: 'red'
+});
 
 let globalDbCfg = {
     host: "",
@@ -41,37 +56,61 @@ function generateModel(dbConfig) {
 
     globalDbCfg = Object.assign(globalDbCfg, cfg);
 
+    let table = globalDbCfg.table;
+    if (typeof table === 'string') {
+        globalDbCfg.table = [globalDbCfg.table]
+    }
+
     Log.i("db config ", globalDbCfg);
 
-    let data = {
-        tableName: modelFun.getTableName(),
-        modelName: modelFun.getModelName()
-    };
+    let promiseArr = [];
+    for (let i in globalDbCfg.table) {
+        let table = globalDbCfg.table[i];
 
-    modelFun.getFieldString().then(fieldString => {
-        data.fieldString = fieldString;
+        let data = {
+            tableName: modelFun.getTableName(table),
+            modelName: modelFun.getModelName(table)
+        };
 
-        return modelFun.getFieldArrList();
+        let p = modelFun.getFieldString(table).then(fieldString => {
+            data.fieldString = fieldString;
+
+            return modelFun.getFieldArrList(table);
+        })
+            .then(res => {
+                data.fieldList = res;
+
+                Log.i(data);
+
+                let templatePath = `${__dirname}/../asset/java_template/model.ejs`;
+                return Util.renderTemplate(templatePath, data)
+            })
+            .then(renderData => {
+
+                if (!fs.existsSync(globalDbCfg.writePath)) {
+                    mkdirp.sync(globalDbCfg.writePath)
+                }
+
+                Util.writeFile(`${globalDbCfg.writePath}/${data.modelName}.kt`, renderData, {mode: 0o755});
+
+                Log.i("================ Gen Success ==================== ".success, table)
+                return true
+            })
+            // .catch(err => {
+            //     Log.e(err.error)
+            // })
+
+        promiseArr.push(p)
+    }
+
+    Promise.all(promiseArr).then((result) => {
+
+        console.log(result)
+        Log.i("------ End ------".help,)
+    }).catch((err) => {
+        Log.e(err.error)
     })
-        .then(res => {
-            data.fieldList = res;
 
-            Log.i(data);
-
-            let templatePath = `${__dirname}/../asset/java_template/model.ejs`;
-            return Util.renderTemplate(templatePath, data)
-        })
-        .then(renderData => {
-
-            if (!fs.existsSync(globalDbCfg.writePath)) {
-                mkdirp.sync(globalDbCfg.writePath)
-            }
-
-            Util.writeFile(`${globalDbCfg.writePath}/${data.modelName}.kt`, renderData, {mode: 0o755})
-        })
-        .catch(err => {
-            Log.e(err)
-        })
 }
 
 
@@ -84,15 +123,15 @@ function generateModel(dbConfig) {
 
 let modelFun = {
 
-    getTableName: function () {
-        return globalDbCfg.table;
+    getTableName: function (table) {
+        return table.toLocaleLowerCase();
     },
 
-    getModelName: function () {
-        return modelFun.formatModelName(globalDbCfg.table);
+    getModelName: function (table) {
+        return modelFun.formatModelName(table);
     },
 
-    getFieldString: function () {
+    getFieldString: function (table) {
         let mysqlConnection = mysqlFun.init();
         return mysqlConnection.query(`select
     concat('"', COLUMN_NAME ,'"') as col
@@ -101,7 +140,7 @@ from
 where
     TABLE_SCHEMA = "${globalDbCfg.database}"
 and
-    TABLE_NAME = "${globalDbCfg.table}"`, {type: Sequelize.QueryTypes.SELECT})
+    TABLE_NAME = "${table}"`, {type: Sequelize.QueryTypes.SELECT})
             .then(result => {
 
                 let fieldArr = [];
@@ -113,13 +152,13 @@ and
             })
     },
 
-    getFieldArrList: function () {
+    getFieldArrList: function (table) {
         let mysqlConnection = mysqlFun.init();
 
         return mysqlConnection.query(`
             select COLUMN_NAME as cn, DATA_TYPE as dt 
             from information_schema.COLUMNS 
-            where TABLE_SCHEMA = "${globalDbCfg.database}" and TABLE_NAME = "${globalDbCfg.table}"`, {type: Sequelize.QueryTypes.SELECT})
+            where TABLE_SCHEMA = "${globalDbCfg.database}" and TABLE_NAME = "${table}"`, {type: Sequelize.QueryTypes.SELECT})
             .then(resList => {
 
                 let dataList = [];

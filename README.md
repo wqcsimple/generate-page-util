@@ -53,7 +53,7 @@ let dbConfig = {
     user: "",               // 数据库用户名
     password: "",           // 数据库密码
     database: "",           // 数据库名
-    table: "",              // 数据库表名
+    table: [""],              // 数据库表名(单表可以为字符串，也可以多数组，生成多表时用数组)
     writePath: `${__dirname}/model` // 输出保存地址
 };
 
