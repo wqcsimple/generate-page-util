@@ -1,6 +1,6 @@
 {
   "name": "generate-page-util",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "generate-page-util",
   "main": "index.js",
   "scripts": {
@@ -20,13 +20,13 @@
   },
   "homepage": "https://github.com/wqcsimple/generate-page-util#readme",
   "dependencies": {
-    "colors": "^1.1.2",
-    "ejs": "^2.5.7",
+    "colors": "^1.3.1",
+    "ejs": "^2.6.1",
     "locutus": "^2.0.9",
     "mkdirp": "^0.5.1",
-    "mysql": "^2.15.0",
-    "mysql2": "^1.5.2",
-    "sequelize": "^4.33.4",
+    "mysql": "^2.16.0",
+    "mysql2": "^1.5.3",
+    "sequelize": "^4.38.0",
     "winston": "^2.4.0"
   }
 }

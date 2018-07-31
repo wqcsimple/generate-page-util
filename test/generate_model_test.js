@@ -8,8 +8,8 @@ let dbConfig = {
     host: "db",
     user: "root",
     password: "7",
-    database: "yeneiren",
-    table: ['message', 'user'],
+    database: "ty1",
+    table: ['message'],
     writePath: `${__dirname}/ejs`
 };
 

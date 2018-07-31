@@ -108,7 +108,7 @@ function generateModel(dbConfig) {
         console.log(result)
         Log.i("------ End ------".help,)
     }).catch((err) => {
-        Log.e(err.error)
+        Log.e(err)
     })
 
 }

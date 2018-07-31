@@ -10,24 +10,26 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @Model(tableName = "user")
 class User : BaseModel() {
 
+    @get:JsonProperty("avatar") var avatar: String = ""
+    @get:JsonProperty("city") var city: String = ""
+    @get:JsonProperty("country") var country: String = ""
+    @get:JsonProperty("create_time") var createTime: Long = 0L
+    @get:JsonProperty("desc") var desc: String = ""
+    @get:JsonProperty("email") var email: String = ""
+    @get:JsonProperty("gender") var gender: Int = 0
     @get:JsonProperty("id") var id: Long = 0L
-    @get:JsonProperty("uid") var uid: String = ""
-    @get:JsonProperty("username") var username: String = ""
+    @get:JsonProperty("identity") var identity: Int = 0
+    @get:JsonProperty("last_login_time") var lastLoginTime: Long = 0L
     @get:JsonProperty("name") var name: String = ""
     @get:JsonProperty("nickname") var nickname: String = ""
-    @get:JsonProperty("phone") var phone: String = ""
     @get:JsonProperty("password") var password: String = ""
-    @get:JsonProperty("email") var email: String = ""
-    @get:JsonProperty("avatar") var avatar: String = ""
-    @get:JsonProperty("gender") var gender: Int = 0
-    @get:JsonProperty("country") var country: String = ""
+    @get:JsonProperty("phone") var phone: String = ""
+    @get:JsonProperty("promote_group_id") var promoteGroupId: Long = 0L
     @get:JsonProperty("province") var province: String = ""
-    @get:JsonProperty("city") var city: String = ""
-    @get:JsonProperty("desc") var desc: String = ""
-    @get:JsonProperty("last_login_time") var lastLoginTime: Long = 0L
-    @get:JsonProperty("weight") var weight: Int = 0
-    @get:JsonProperty("create_time") var createTime: Long = 0L
+    @get:JsonProperty("uid") var uid: String = ""
     @get:JsonProperty("update_time") var updateTime: Long = 0L
+    @get:JsonProperty("username") var username: String = ""
+    @get:JsonProperty("weight") var weight: Int = 0
     
 
     override fun ID(): Long? {
@@ -35,15 +37,15 @@ class User : BaseModel() {
     }
 
     override fun keys(): Array<String> {
-        return arrayOf("id", "uid", "username", "name", "nickname", "phone", "password", "email", "avatar", "gender", "country", "province", "city", "desc", "last_login_time", "weight", "create_time", "update_time")
+        return arrayOf("avatar", "city", "country", "create_time", "desc", "email", "gender", "id", "identity", "last_login_time", "name", "nickname", "password", "phone", "promote_group_id", "province", "uid", "update_time", "username", "weight")
     }
 
     override fun basicKeys(): Array<String> {
-        return arrayOf("id", "uid", "username", "name", "nickname", "phone", "password", "email", "avatar", "gender", "country", "province", "city", "desc", "last_login_time", "weight", "create_time", "update_time")
+        return arrayOf("avatar", "city", "country", "create_time", "desc", "email", "gender", "id", "identity", "last_login_time", "name", "nickname", "password", "phone", "promote_group_id", "province", "uid", "update_time", "username", "weight")
     }
 
     override fun detailKeys(): Array<String> {
-        return arrayOf("id", "uid", "username", "name", "nickname", "phone", "password", "email", "avatar", "gender", "country", "province", "city", "desc", "last_login_time", "weight", "create_time", "update_time")
+        return arrayOf("avatar", "city", "country", "create_time", "desc", "email", "gender", "id", "identity", "last_login_time", "name", "nickname", "password", "phone", "promote_group_id", "province", "uid", "update_time", "username", "weight")
     }
 
     override fun process(model: Any, keys: Array<String>?): Map<String, Any>? {
