@@ -69,7 +69,9 @@ function generateModel(dbConfig) {
 
         let data = {
             tableName: modelFun.getTableName(table),
-            modelName: modelFun.getModelName(table)
+            modelName: modelFun.getModelName(table),
+            mapperName: modelFun.getMapperName(table),
+            serviceName: modelFun.getServiceName(table)
         };
 
         let p = modelFun.getFieldString(table).then(fieldString => {
@@ -86,15 +88,46 @@ function generateModel(dbConfig) {
                 return Util.renderTemplate(templatePath, data)
             })
             .then(renderData => {
+                // render model
+                let modelPath = globalDbCfg.writePath + "/model"; // model类保存路径
 
-                if (!fs.existsSync(globalDbCfg.writePath)) {
-                    mkdirp.sync(globalDbCfg.writePath)
+                if (!fs.existsSync(modelPath)) {
+                    mkdirp.sync(modelPath)
                 }
 
-                Util.writeFile(`${globalDbCfg.writePath}/${data.modelName}.kt`, renderData, {mode: 0o755});
+                return Util.writeFile(`${modelPath}/${data.modelName}.kt`, renderData, {mode: 0o755});
+            })
+            .then(res => {
+                Log.i("================ Gen model Success ==================== ".success, table);
 
-                Log.i("================ Gen Success ==================== ".success, table)
-                return true
+                let mapperTemplatePath = `${__dirname}/../asset/java_template/mapper.ejs`;
+                return Util.renderTemplate(mapperTemplatePath, data);
+            })
+            .then(renderData => {
+                let mapperPath = globalDbCfg.writePath + "/mapper";
+                if (!fs.existsSync(mapperPath)) {
+                    mkdirp.sync(mapperPath);
+                }
+
+                return Util.writeFile(`${mapperPath}/${data.mapperName}.kt`, renderData, {mode: 0o755});
+            })
+            .then(res => {
+                Log.i("================ Gen Mapper Success ==================== ".success, table);
+
+                let mapperTemplatePath = `${__dirname}/../asset/java_template/service.ejs`;
+                return Util.renderTemplate(mapperTemplatePath, data);
+            })
+            .then(renderData => {
+                let mapperPath = globalDbCfg.writePath + "/service";
+                if (!fs.existsSync(mapperPath)) {
+                    mkdirp.sync(mapperPath);
+                }
+
+                return Util.writeFile(`${mapperPath}/${data.serviceName}.kt`, renderData, {mode: 0o755});
+            })
+            .then(res => {
+                Log.i("================ Gen Service Success ==================== ".success, table);
+                return true;
             })
             // .catch(err => {
             //     Log.e(err.error)
@@ -105,7 +138,7 @@ function generateModel(dbConfig) {
 
     Promise.all(promiseArr).then((result) => {
 
-        console.log(result)
+        console.log(result);
         Log.i("------ End ------".help,)
     }).catch((err) => {
         Log.e(err)
@@ -129,6 +162,14 @@ let modelFun = {
 
     getModelName: function (table) {
         return modelFun.formatModelName(table);
+    },
+
+    getMapperName: function(table) {
+        return modelFun.formatModelName(table) + "Mapper";
+    },
+
+    getServiceName: function(table) {
+        return modelFun.formatModelName(table) + "Service";
     },
 
     getFieldString: function (table) {

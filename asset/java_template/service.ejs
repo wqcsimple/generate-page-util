@@ -1,0 +1,11 @@
+package com.pinjia.model
+
+import org.springframework.stereotype.Service
+
+@Service("<%= modelName %>Service")
+class <%= modelName %>Service {
+
+    companion object {
+        private val logger = org.slf4j.LoggerFactory.getLogger(<%= modelName %>Service::class.java)
+    }
+}

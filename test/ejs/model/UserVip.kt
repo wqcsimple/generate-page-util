@@ -7,16 +7,15 @@ import com.dix.base.model.BaseModel
 import com.dix.base.model.Model
 import com.fasterxml.jackson.annotation.JsonProperty
 
-@Model(tableName = "admin")
-class Admin : BaseModel() {
+@Model(tableName = "user_vip")
+class UserVip : BaseModel() {
 
     @get:JsonProperty("id") var id: Long = 0L
-    @get:JsonProperty("username") var username: String = ""
-    @get:JsonProperty("password") var password: String = ""
-    @get:JsonProperty("name") var name: String = ""
-    @get:JsonProperty("gender") var gender: Int = 0
-    @get:JsonProperty("email") var email: String = ""
-    @get:JsonProperty("data") var data: String = ""
+    @get:JsonProperty("user_id") var userId: Long = 0L
+    @get:JsonProperty("vip_level") var vipLevel: Int = 0
+    @get:JsonProperty("price") var price: Int = 0
+    @get:JsonProperty("begin_time") var beginTime: Long = 0L
+    @get:JsonProperty("end_time") var endTime: Long = 0L
     @get:JsonProperty("weight") var weight: Int = 0
     @get:JsonProperty("create_time") var createTime: Long = 0L
     @get:JsonProperty("update_time") var updateTime: Long = 0L
@@ -27,15 +26,15 @@ class Admin : BaseModel() {
     }
 
     override fun keys(): Array<String> {
-        return arrayOf("id", "username", "password", "name", "gender", "email", "data", "weight", "create_time", "update_time")
+        return arrayOf("id", "user_id", "vip_level", "price", "begin_time", "end_time", "weight", "create_time", "update_time")
     }
 
     override fun basicKeys(): Array<String> {
-        return arrayOf("id", "username", "password", "name", "gender", "email", "data", "weight", "create_time", "update_time")
+        return arrayOf("id", "user_id", "vip_level", "price", "begin_time", "end_time", "weight", "create_time", "update_time")
     }
 
     override fun detailKeys(): Array<String> {
-        return arrayOf("id", "username", "password", "name", "gender", "email", "data", "weight", "create_time", "update_time")
+        return arrayOf("id", "user_id", "vip_level", "price", "begin_time", "end_time", "weight", "create_time", "update_time")
     }
 
     override fun process(model: Any, keys: Array<String>?): Map<String, Any>? {
@@ -51,15 +50,15 @@ class Admin : BaseModel() {
 
     companion object {
 
-        fun findById(id: Long?): Admin? {
-            return Core.Q().findById(Admin::class.java, id)
+        fun findById(id: Long): UserVip? {
+            return Core.Q().findById(UserVip::class.java, id)
         }
 
-        fun findOrFail(id: Long?): Admin {
+        fun findOrFail(id: Long): UserVip {
             return findById(id) ?: throw NotExistsException()
         }
 
-        fun getRawById(id: Long?): Map<String, Any>? {
+        fun getRawById(id: Long): Map<String, Any>? {
             val data = findById(id) ?: return null
             return data.process()
         }

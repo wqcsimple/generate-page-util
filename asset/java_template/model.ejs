@@ -21,11 +21,11 @@ class <%= modelName %> : BaseModel() {
         return arrayOf(<%- fieldString %>)
     }
 
-    override fun basicKeys(): Array<String> {
+    fun basicKeys(): Array<String> {
         return arrayOf(<%- fieldString %>)
     }
 
-    override fun detailKeys(): Array<String> {
+    fun detailKeys(): Array<String> {
         return arrayOf(<%- fieldString %>)
     }
 
