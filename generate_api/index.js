@@ -3,8 +3,15 @@
  * @Created 11/30/18
  */
 const Log = require('../lib/logger');
+const Util = require('../lib/util');
+const fs   = require('fs');
+const mkdirp    = require('mkdirp');
 const request = require("request");
 
+let globalCfg = {
+    url: "",
+    writePath: "",
+};
 let tagList = [];
 
 function get(url) {
@@ -23,25 +30,52 @@ function get(url) {
     })
 }
 
-function generateApi(url) {
-    if (!url) {
+function generateApi(config) {
+    if (!config) {
         Log.e("db config is not set");
         return false;
     }
 
-    get(url)
+    if (typeof config !== 'object') {
+        Log.e('options must be a object.');
+        return false;
+    }
+
+    globalCfg = Object.assign(globalCfg, config);
+
+    if (!globalCfg.url) {
+        Log.e("url is not set");
+        return false;
+    }
+
+    get(globalCfg.url)
         .then(res => {
             if (!res) {
                 Log.e("response data is error");
-            } else {
-                let swaggerJson = JSON.parse(res);
-                processTags(swaggerJson.tags);
-
-                let paths = swaggerJson.paths;
-                processPaths(paths)
+                throw "response data is error";
             }
+
+            let swaggerJson = JSON.parse(res);
+            processTags(swaggerJson.tags);
+
+            let paths = swaggerJson.paths;
+            processPaths(paths);
+
+            let templatePath = `${__dirname}/../asset/js_api_template/api.ejs`;
+            return Util.renderTemplate(templatePath, {tagList: tagList})
+        })
+        .then(renderData => {
+            if (!fs.existsSync(globalCfg.writePath)) {
+                mkdirp.sync(globalCfg.writePath)
+            }
+
+            return Util.writeFile(`${globalCfg.writePath}/api.js`, renderData, {mode: 0o755});
+        })
+        .then(res => {
+            Log.i("================ Gen api Success ==================== ".success);
         })
         .catch(err => {
+            console.error(err)
         })
 }
 
@@ -66,11 +100,13 @@ function processPaths(paths) {
         let requestMethods = paths[key];
         let obj = {
             name: "",
-            url: url,
-            method: '',
+            url: Util.trim(url, '/'),
+            method: "",
             summary: "",
             params: "",
+            tags: [],
         };
+
         Object.keys(requestMethods).forEach(method => {
             obj.method = method.toUpperCase();
 
@@ -78,16 +114,23 @@ function processPaths(paths) {
             obj.summary = pathInfo['summary'];
             obj.name = filterOperationId(pathInfo['operationId']);
 
-            let paramArr = [];
-            pathInfo['parameters'].map(p => {
-                paramArr.push("'" + p.name + "'")
-            });
+            if (pathInfo['parameters']) {
+                let paramArr = [];
+                pathInfo['parameters'].map(p => {
+                    paramArr.push(`"${p.name}"`)
+                });
 
-            obj.params = paramArr.join(",");
+                obj.params = paramArr.join(", ");
+            }
+            obj.tags = pathInfo.tags;
+
+            for (let tag of tagList) {
+                if (obj.tags.indexOf(tag.name) >= 0) {
+                    tag.apiList.push(obj)
+                }
+            }
         });
-
-        console.log(obj)
-    })
+    });
 }
 
 function filterController(controller) {

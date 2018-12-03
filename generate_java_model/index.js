@@ -222,6 +222,7 @@ and
         let typeList = {
             "varchar": 'String',
             "int": 'Int',
+            'tinyint': 'Int',
             "bigint": "Long",
             "double": 'Double',
             "text": "String",

@@ -1,0 +1,10 @@
+
+const apiList = [
+<% tagList.forEach(function (item) { %> // <%=item.name%>
+    <%= item.controller %>: {
+        <% item.apiList.forEach(function (it) { %>// <%=it.summary%>
+        <%=it.name%>: ["<%=it.method%>|<%=it.url%>", <%-it.params%>],
+        <% }) %>
+    },
+<% }); %>
+]

@@ -4,6 +4,11 @@
  */
 const generateApi = require('../index').generateApi;
 
-generateApi("https://ly.api.wwhis.com/v2/api-docs?group=gradle-spring-boot");
+let config = {
+    url: "https://ly.api.wwhis.com/v2/api-docs?group=gradle-spring-boot",
+    writePath: `${__dirname}/ejs`
+};
+
+generateApi(config);
 
 
