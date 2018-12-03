@@ -10,6 +10,7 @@ const request = require("request");
 
 let globalCfg = {
     url: "",
+    prefix: "",
     writePath: "",
 };
 let tagList = [];
@@ -97,6 +98,9 @@ function processTags(tags) {
 function processPaths(paths) {
     Object.keys(paths).forEach(key => {
         let url = key;
+        if (url.indexOf(globalCfg.prefix) != 0) {
+            return;
+        }
         let requestMethods = paths[key];
         let obj = {
             name: "",

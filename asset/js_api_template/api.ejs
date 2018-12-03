@@ -1,5 +1,5 @@
 
-const apiList = [
+const apiList = {
 <% tagList.forEach(function (item) { %> // <%=item.name%>
     <%= item.controller %>: {
         <% item.apiList.forEach(function (it) { %>// <%=it.summary%>
@@ -7,4 +7,4 @@ const apiList = [
         <% }) %>
     },
 <% }); %>
-]
+}
