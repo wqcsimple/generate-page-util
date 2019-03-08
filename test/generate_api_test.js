@@ -5,7 +5,7 @@
 const generateApi = require('../index').generateApi;
 
 let config = {
-    url: "https://ly.api.wwhis.com/v2/api-docs?group=gradle-spring-boot",
+    url: "http://localhost:9888/v2/api-docs?group=gradle-spring-boot",
     prefix: "/customer/1",
     writePath: `${__dirname}/ejs`
 };

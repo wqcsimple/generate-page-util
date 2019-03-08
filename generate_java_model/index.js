@@ -197,9 +197,9 @@ and
         let mysqlConnection = mysqlFun.init();
 
         return mysqlConnection.query(`
-            select COLUMN_NAME as cn, DATA_TYPE as dt 
-            from information_schema.COLUMNS 
-            where TABLE_SCHEMA = "${globalDbCfg.database}" and TABLE_NAME = "${table}"`, {type: Sequelize.QueryTypes.SELECT})
+            SELECT COLUMN_NAME as cn, DATA_TYPE as dt, column_comment as cc 
+            FROM information_schema.COLUMNS 
+            WHERE TABLE_SCHEMA = "${globalDbCfg.database}" and TABLE_NAME = "${table}"`, {type: Sequelize.QueryTypes.SELECT})
             .then(resList => {
 
                 let dataList = [];
@@ -208,7 +208,8 @@ and
                         jsonName: item['cn'],
                         modelName: modelFun.formatJsonModelName(item['cn']),
                         dataType: modelFun.formatDataType(item['dt']),
-                        dataTypeValue: modelFun.formatDataTypeDeFaultValue(modelFun.formatDataType(item['dt']))
+                        dataTypeValue: modelFun.formatDataTypeDeFaultValue(modelFun.formatDataType(item['dt'])),
+                        comment: item['cc']
                     };
 
                     dataList.push(obj)

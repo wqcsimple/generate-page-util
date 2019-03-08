@@ -8,8 +8,8 @@ let dbConfig = {
     host: "db",
     user: "root",
     password: "7",
-    database: "leyi",
-    table: ['vip_config'],
+    database: "hm_api",
+    table: ['hm_goods'],
     writePath: `${__dirname}/ejs`
 };
 

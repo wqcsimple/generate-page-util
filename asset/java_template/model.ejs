@@ -1,4 +1,4 @@
-package com.pinjia.model
+package com.whis.model
 
 import com.dix.base.core.Core
 import com.dix.base.common.Const
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @Model(tableName = "<%= tableName %>")
 class <%= modelName %> : BaseModel() {
 
-    <% fieldList.forEach(function (item) { %>@get:JsonProperty("<%= item['jsonName'] %>") var <%= item['modelName'] %>: <%= item['dataType'] %> = <%- item['dataTypeValue'] %>
+    <% fieldList.forEach(function (item) { %>@get:JsonProperty("<%= item['jsonName'] %>") var <%= item['modelName'] %>: <%= item['dataType'] %> = <%- item['dataTypeValue'] %> <% if (item['comment']) { %> // <%= item["comment"] %> <% } %>
     <% }); %>
 
     override fun ID(): Long? {
