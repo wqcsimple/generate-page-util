@@ -61,7 +61,7 @@ function generateModel(dbConfig) {
         globalDbCfg.table = [globalDbCfg.table]
     }
 
-    Log.i("db config ", globalDbCfg);
+    Log.i("db config %s", globalDbCfg);
 
     let promiseArr = [];
     for (let i in globalDbCfg.table) {
@@ -199,7 +199,7 @@ and
         return mysqlConnection.query(`
             SELECT COLUMN_NAME as cn, DATA_TYPE as dt, column_comment as cc 
             FROM information_schema.COLUMNS 
-            WHERE TABLE_SCHEMA = "${globalDbCfg.database}" and TABLE_NAME = "${table}"`, {type: Sequelize.QueryTypes.SELECT})
+            WHERE TABLE_SCHEMA = "${globalDbCfg.database}" and TABLE_NAME = "${table}" ORDER BY ORDINAL_POSITION ASC `, {type: Sequelize.QueryTypes.SELECT})
             .then(resList => {
 
                 let dataList = [];

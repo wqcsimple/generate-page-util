@@ -20,14 +20,14 @@
   },
   "homepage": "https://github.com/wqcsimple/generate-page-util#readme",
   "dependencies": {
-    "colors": "^1.3.2",
-    "ejs": "^2.6.1",
-    "locutus": "^2.0.10",
+    "colors": "^1.3.3",
+    "ejs": "^2.6.2",
+    "locutus": "^2.0.11",
     "mkdirp": "^0.5.1",
-    "mysql": "^2.16.0",
-    "mysql2": "^1.6.4",
+    "mysql": "^2.17.1",
+    "mysql2": "^1.6.5",
     "request": "^2.88.0",
-    "sequelize": "^4.41.2",
+    "sequelize": "^5.8.9",
     "winston": "2.4.0"
   }
 }
