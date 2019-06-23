@@ -9,7 +9,7 @@ let dbConfig = {
     user: "root",
     password: "7",
     database: "leyi",
-    table: ['membership_card'],
+    table: ['heath_archives', 'heath_medical_record', 'heath_record'],
     writePath: `${__dirname}/ejs`
 };
 

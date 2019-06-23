@@ -181,7 +181,7 @@ from
 where
     TABLE_SCHEMA = "${globalDbCfg.database}"
 and
-    TABLE_NAME = "${table}"`, {type: Sequelize.QueryTypes.SELECT})
+    TABLE_NAME = "${table}" ORDER BY ORDINAL_POSITION ASC`, {type: Sequelize.QueryTypes.SELECT})
             .then(result => {
 
                 let fieldArr = [];
