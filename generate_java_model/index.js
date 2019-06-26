@@ -63,6 +63,28 @@ function generateModel(dbConfig) {
 
     Log.i("db config %s", globalDbCfg);
 
+    let modelPath = globalDbCfg.writePath + "/model"; // model类保存路径
+    let modelTemplateEjs = `${__dirname}/../asset/java_template/model.ejs`;
+
+    let servicePath = globalDbCfg.writePath + "/service";
+    let serviceTemplateEjs = `${__dirname}/../asset/java_template/service.ejs`;
+
+    let mapperPath = globalDbCfg.writePath + "/mapper";
+    let mapperTemplateEjs = `${__dirname}/../asset/java_template/mapper.ejs`;
+
+    Util.rmdirSync(modelPath);
+    Util.rmdirSync(servicePath);
+    Util.rmdirSync(mapperPath);
+    if (!fs.existsSync(modelPath)) {
+        mkdirp.sync(modelPath);
+    }
+    if (!fs.existsSync(servicePath)) {
+        mkdirp.sync(servicePath);
+    }
+    if (!fs.existsSync(mapperPath)) {
+        mkdirp.sync(mapperPath);
+    }
+
     let promiseArr = [];
     for (let i in globalDbCfg.table) {
         let table = globalDbCfg.table[i];
@@ -84,46 +106,26 @@ function generateModel(dbConfig) {
 
                 Log.i(data);
 
-                let templatePath = `${__dirname}/../asset/java_template/model.ejs`;
-                return Util.renderTemplate(templatePath, data)
+                return Util.renderTemplate(modelTemplateEjs, data)
             })
             .then(renderData => {
-                // render model
-                let modelPath = globalDbCfg.writePath + "/model"; // model类保存路径
-
-                if (!fs.existsSync(modelPath)) {
-                    mkdirp.sync(modelPath)
-                }
-
                 return Util.writeFile(`${modelPath}/${data.modelName}.kt`, renderData, {mode: 0o755});
             })
             .then(res => {
                 Log.i("================ Gen model Success ==================== ".success, table);
 
-                let mapperTemplatePath = `${__dirname}/../asset/java_template/mapper.ejs`;
-                return Util.renderTemplate(mapperTemplatePath, data);
+                return Util.renderTemplate(mapperTemplateEjs, data);
             })
             .then(renderData => {
-                let mapperPath = globalDbCfg.writePath + "/mapper";
-                if (!fs.existsSync(mapperPath)) {
-                    mkdirp.sync(mapperPath);
-                }
-
                 return Util.writeFile(`${mapperPath}/${data.mapperName}.kt`, renderData, {mode: 0o755});
             })
             .then(res => {
                 Log.i("================ Gen Mapper Success ==================== ".success, table);
 
-                let mapperTemplatePath = `${__dirname}/../asset/java_template/service.ejs`;
-                return Util.renderTemplate(mapperTemplatePath, data);
+                return Util.renderTemplate(serviceTemplateEjs, data);
             })
             .then(renderData => {
-                let mapperPath = globalDbCfg.writePath + "/service";
-                if (!fs.existsSync(mapperPath)) {
-                    mkdirp.sync(mapperPath);
-                }
-
-                return Util.writeFile(`${mapperPath}/${data.serviceName}.kt`, renderData, {mode: 0o755});
+                return Util.writeFile(`${servicePath}/${data.serviceName}.kt`, renderData, {mode: 0o755});
             })
             .then(res => {
                 Log.i("================ Gen Service Success ==================== ".success, table);

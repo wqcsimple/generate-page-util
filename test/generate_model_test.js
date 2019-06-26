@@ -8,8 +8,8 @@ let dbConfig = {
     host: "db",
     user: "root",
     password: "7",
-    database: "leyi",
-    table: ['heath_archives', 'heath_medical_record', 'heath_record'],
+    database: "lear-api",
+    table: ['tp_code', 'token'],
     writePath: `${__dirname}/ejs`
 };
 
