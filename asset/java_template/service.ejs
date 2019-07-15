@@ -8,4 +8,11 @@ class <%= modelName %>Service {
     companion object {
         private val logger = org.slf4j.LoggerFactory.getLogger(<%= modelName %>Service::class.java)
     }
+
+    @Autowired
+    lateinit var <%= functionName %>Mapper: <%= modelName %>Mapper
+
+    private fun select(condition: <%= modelName %>, otherCondition: String?): List<<%= modelName %>> {
+        return <%= functionName %>Mapper.select(condition, otherCondition)
+    }
 }
