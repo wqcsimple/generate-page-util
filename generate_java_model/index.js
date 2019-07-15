@@ -66,6 +66,9 @@ function generateModel(dbConfig) {
     let modelPath = globalDbCfg.writePath + "/model"; // model类保存路径
     let modelTemplateEjs = `${__dirname}/../asset/java_template/model.ejs`;
 
+    let controllerPath = globalDbCfg.writePath + "/controller";
+    let controllerTemplateEjs = `${__dirname}/../asset/java_template/controller.ejs`;
+
     let servicePath = globalDbCfg.writePath + "/service";
     let serviceTemplateEjs = `${__dirname}/../asset/java_template/service.ejs`;
 
@@ -73,10 +76,14 @@ function generateModel(dbConfig) {
     let mapperTemplateEjs = `${__dirname}/../asset/java_template/mapper.ejs`;
 
     Util.rmdirSync(modelPath);
+    Util.rmdirSync(controllerPath);
     Util.rmdirSync(servicePath);
     Util.rmdirSync(mapperPath);
     if (!fs.existsSync(modelPath)) {
         mkdirp.sync(modelPath);
+    }
+    if (!fs.existsSync(controllerPath)) {
+        mkdirp.sync(controllerPath);
     }
     if (!fs.existsSync(servicePath)) {
         mkdirp.sync(servicePath);
@@ -94,6 +101,7 @@ function generateModel(dbConfig) {
             modelName: modelFun.getModelName(table),
             mapperName: modelFun.getMapperName(table),
             serviceName: modelFun.getServiceName(table),
+            controllerName: modelFun.getControllerName(table),
             functionName: modelFun.getFunctionName(table)
         };
 
@@ -130,6 +138,14 @@ function generateModel(dbConfig) {
             })
             .then(res => {
                 Log.i("================ Gen Service Success ==================== ".success, table);
+
+                return Util.renderTemplate(controllerTemplateEjs, data);
+            })
+            .then(renderData => {
+                return Util.writeFile(`${controllerPath}/${data.controllerName}.kt`, renderData, {mode: 0o755});
+            })
+            .then(res => {
+                Log.i("================ Gen Controller Success ==================== ".success, table);
                 return true;
             })
         // .catch(err => {
@@ -166,6 +182,10 @@ let modelFun = {
 
     getServiceName: function (table) {
         return modelFun.formatModelName(table) + "Service";
+    },
+
+    getControllerName: function(table) {
+        return modelFun.formatModelName(table) + "Controller";
     },
 
     getFunctionName: function (modelName) {

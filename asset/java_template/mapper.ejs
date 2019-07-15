@@ -11,6 +11,5 @@ import org.apache.ibatis.annotations.SelectProvider
 interface <%= modelName %>Mapper {
 
     @SelectProvider(type = SqlProvider::class, method = "select")
-    fun select(@Param("condition") condition: Any,
-    @Param("otherCondition") otherCondition: String?): List<<%= modelName %>>
+    fun select(@Param("condition") condition: Any, @Param("otherCondition") otherCondition: String?): List<<%= modelName %>>
 }
