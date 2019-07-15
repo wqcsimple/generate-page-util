@@ -4,10 +4,10 @@
  */
 const Log = require('../lib/logger');
 const Util = require('../lib/util');
-const fs   = require('fs');
-const mkdirp    = require('mkdirp');
+const fs = require('fs');
+const mkdirp = require('mkdirp');
 const Sequelize = require('sequelize');
-const colors    = require('colors');
+const colors = require('colors');
 
 // colors config
 colors.setTheme({
@@ -93,7 +93,8 @@ function generateModel(dbConfig) {
             tableName: modelFun.getTableName(table),
             modelName: modelFun.getModelName(table),
             mapperName: modelFun.getMapperName(table),
-            serviceName: modelFun.getServiceName(table)
+            serviceName: modelFun.getServiceName(table),
+            functionName: modelFun.getFunctionName(table)
         };
 
         let p = modelFun.getFieldString(table).then(fieldString => {
@@ -131,9 +132,9 @@ function generateModel(dbConfig) {
                 Log.i("================ Gen Service Success ==================== ".success, table);
                 return true;
             })
-            // .catch(err => {
-            //     Log.e(err.error)
-            // })
+        // .catch(err => {
+        //     Log.e(err.error)
+        // })
 
         promiseArr.push(p)
     }
@@ -149,13 +150,6 @@ function generateModel(dbConfig) {
 }
 
 
-
-
-
-
-
-
-
 let modelFun = {
 
     getTableName: function (table) {
@@ -166,12 +160,26 @@ let modelFun = {
         return modelFun.formatModelName(table);
     },
 
-    getMapperName: function(table) {
+    getMapperName: function (table) {
         return modelFun.formatModelName(table) + "Mapper";
     },
 
-    getServiceName: function(table) {
+    getServiceName: function (table) {
         return modelFun.formatModelName(table) + "Service";
+    },
+
+    getFunctionName: function (modelName) {
+        let arr = modelName.split('_');
+
+        arr.map((item, index) => {
+            if (index === 0) {
+                arr[index] = item.toLowerCase();
+            } else {
+                arr[index] = Util.firstUpperCase(item);
+            }
+        });
+
+        return arr.join("");
     },
 
     getFieldString: function (table) {
