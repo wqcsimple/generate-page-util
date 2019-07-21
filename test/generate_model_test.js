@@ -8,8 +8,8 @@ let dbConfig = {
     host: "db",
     user: "root",
     password: "7",
-    database: "lear-api",
-    table: ['user_bind'],
+    database: "hb-api",
+    table: ['au_oauth_code'],
     writePath: `${__dirname}/ejs`
 };
 
