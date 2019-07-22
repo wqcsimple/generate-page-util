@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
  *  Created by whis on 2019-06-18
  */
 @RestController
-@RequestMapping("/client/1/user-address")
+@RequestMapping("/client/1/<%= controllerPath %>")
 @Api(tags = [""])
 class <%= modelName %>Controller : BaseController() {
 

@@ -102,9 +102,11 @@ function generateModel(dbConfig) {
             mapperName: modelFun.getMapperName(table),
             serviceName: modelFun.getServiceName(table),
             controllerName: modelFun.getControllerName(table),
+            controllerPath: modelFun.getControllerPath(table),
             functionName: modelFun.getFunctionName(table)
         };
 
+        console.log(data,  'whis')
         let p = modelFun.getFieldString(table).then(fieldString => {
             data.fieldString = fieldString;
 
@@ -186,6 +188,12 @@ let modelFun = {
 
     getControllerName: function(table) {
         return modelFun.formatModelName(table) + "Controller";
+    },
+
+    getControllerPath: function(table) {
+        let arr = table.split('_');
+
+        return arr.join("-");
     },
 
     getFunctionName: function (modelName) {

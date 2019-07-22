@@ -9,7 +9,7 @@ let dbConfig = {
     user: "root",
     password: "7",
     database: "hb-api",
-    table: ['goods', 'goods_brand', 'goods_category', 'goods_model'],
+    table: ['goods_brand'],
     writePath: `${__dirname}/ejs`
 };
 
