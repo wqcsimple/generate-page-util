@@ -106,50 +106,56 @@ function generateModel(dbConfig) {
             functionName: modelFun.getFunctionName(table)
         };
 
-        console.log(data,  'whis')
-        let p = modelFun.getFieldString(table).then(fieldString => {
-            data.fieldString = fieldString;
+        let p =
+            modelFun.getTableComment(table)
+                .then(tableComment => {
+                    data.tableComment = tableComment;
 
-            return modelFun.getFieldArrList(table);
-        })
-            .then(res => {
-                data.fieldList = res;
+                    return modelFun.getFieldString(table)
+                })
+                .then(fieldString => {
+                    data.fieldString = fieldString;
 
-                Log.i(data);
+                    return modelFun.getFieldArrList(table);
+                })
+                .then(res => {
+                    data.fieldList = res;
 
-                return Util.renderTemplate(modelTemplateEjs, data)
-            })
-            .then(renderData => {
-                return Util.writeFile(`${modelPath}/${data.modelName}.kt`, renderData, {mode: 0o755});
-            })
-            .then(res => {
-                Log.i("================ Gen model Success ==================== ".success, table);
+                    Log.i(data);
 
-                return Util.renderTemplate(mapperTemplateEjs, data);
-            })
-            .then(renderData => {
-                return Util.writeFile(`${mapperPath}/${data.mapperName}.kt`, renderData, {mode: 0o755});
-            })
-            .then(res => {
-                Log.i("================ Gen Mapper Success ==================== ".success, table);
+                    return Util.renderTemplate(modelTemplateEjs, data)
+                })
+                .then(renderData => {
+                    return Util.writeFile(`${modelPath}/${data.modelName}.kt`, renderData, {mode: 0o755});
+                })
+                .then(res => {
+                    Log.i("================ Gen model Success ==================== ".success, table);
 
-                return Util.renderTemplate(serviceTemplateEjs, data);
-            })
-            .then(renderData => {
-                return Util.writeFile(`${servicePath}/${data.serviceName}.kt`, renderData, {mode: 0o755});
-            })
-            .then(res => {
-                Log.i("================ Gen Service Success ==================== ".success, table);
+                    return Util.renderTemplate(mapperTemplateEjs, data);
+                })
+                .then(renderData => {
+                    return Util.writeFile(`${mapperPath}/${data.mapperName}.kt`, renderData, {mode: 0o755});
+                })
+                .then(res => {
+                    Log.i("================ Gen Mapper Success ==================== ".success, table);
 
-                return Util.renderTemplate(controllerTemplateEjs, data);
-            })
-            .then(renderData => {
-                return Util.writeFile(`${controllerPath}/${data.controllerName}.kt`, renderData, {mode: 0o755});
-            })
-            .then(res => {
-                Log.i("================ Gen Controller Success ==================== ".success, table);
-                return true;
-            })
+                    return Util.renderTemplate(serviceTemplateEjs, data);
+                })
+                .then(renderData => {
+                    return Util.writeFile(`${servicePath}/${data.serviceName}.kt`, renderData, {mode: 0o755});
+                })
+                .then(res => {
+                    Log.i("================ Gen Service Success ==================== ".success, table);
+
+                    return Util.renderTemplate(controllerTemplateEjs, data);
+                })
+                .then(renderData => {
+                    return Util.writeFile(`${controllerPath}/${data.controllerName}.kt`, renderData, {mode: 0o755});
+                })
+                .then(res => {
+                    Log.i("================ Gen Controller Success ==================== ".success, table);
+                    return true;
+                })
         // .catch(err => {
         //     Log.e(err.error)
         // })
@@ -186,11 +192,11 @@ let modelFun = {
         return modelFun.formatModelName(table) + "Service";
     },
 
-    getControllerName: function(table) {
+    getControllerName: function (table) {
         return modelFun.formatModelName(table) + "Controller";
     },
 
-    getControllerPath: function(table) {
+    getControllerPath: function (table) {
         let arr = table.split('_');
 
         return arr.join("-");
@@ -208,6 +214,24 @@ let modelFun = {
         });
 
         return arr.join("");
+    },
+
+    getTableComment: function (table) {
+        let mysqlConnection = mysqlFun.init();
+        return mysqlConnection.query(`SELECT TABLE_COMMENT as col FROM information_schema.TABLES
+WHERE
+    TABLE_SCHEMA = "${globalDbCfg.database}"
+and
+    TABLE_NAME = "${table}"`, {type: Sequelize.QueryTypes.SELECT})
+            .then(result => {
+
+                let fieldArr = [];
+                result.map(item => {
+                    fieldArr.push(item['col'])
+                });
+
+                return fieldArr.join(', ');
+            })
     },
 
     getFieldString: function (table) {

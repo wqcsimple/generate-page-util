@@ -6,6 +6,9 @@ import com.fly.base.model.Model
 import com.fly.base.model.BaseModel
 import com.fasterxml.jackson.annotation.JsonProperty
 
+/**
+*  <%= tableComment %>
+*/
 @Model(tableName = "<%= tableName %>")
 class <%= modelName %> : BaseModel() {
 
@@ -21,7 +24,7 @@ class <%= modelName %> : BaseModel() {
     }
 
     fun basicKeys(): Array<String> {
-        return arrayOf(<%- fieldString %>)
+        return keys
     }
 
     fun detailKeys(): Array<String> {
@@ -40,6 +43,8 @@ class <%= modelName %> : BaseModel() {
     }
 
     companion object {
+
+        val keys = arrayOf(<%- fieldString %>)
 
         fun findById(id: Long): <%= modelName %>? {
             return Core.Q().findById(<%= modelName %>::class.java, id)
