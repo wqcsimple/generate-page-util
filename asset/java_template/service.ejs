@@ -12,7 +12,7 @@ class <%= modelName %>Service {
     @Autowired
     lateinit var <%= functionName %>Mapper: <%= modelName %>Mapper
 
-    private fun select(condition: <%= modelName %>, otherCondition: String?): List<<%= modelName %>> {
+    fun select(condition: <%= modelName %>, otherCondition: String?): List<<%= modelName %>> {
         return <%= functionName %>Mapper.select(condition, otherCondition)
     }
 }
