@@ -9,7 +9,7 @@ let dbConfig = {
     user: "root",
     password: "7",
     database: "lear-api",
-    table: ['user_bind'],
+    table: ['merchant_pay_query'],
     writePath: `${__dirname}/ejs`
 };
 
