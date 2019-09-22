@@ -20,7 +20,7 @@ class <%= modelName %> : BaseModel() {
     }
 
     override fun keys(): Array<String> {
-        return arrayOf(<%- fieldString %>)
+        return keys
     }
 
     fun basicKeys(): Array<String> {
@@ -29,17 +29,6 @@ class <%= modelName %> : BaseModel() {
 
     fun detailKeys(): Array<String> {
         return arrayOf(<%- fieldString %>)
-    }
-
-    override fun process(model: Any, keys: Array<String>?): Map<String, Any>? {
-        val map = Core.processModel(model, keys)
-
-        if (map != null)
-        {
-
-        }
-
-        return map
     }
 
     companion object {
