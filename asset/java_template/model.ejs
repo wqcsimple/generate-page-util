@@ -20,7 +20,7 @@ class <%= modelName %> : BaseModel() {
     }
 
     override fun keys(): Array<String> {
-        return arrayOf(<%- fieldString %>)
+        return keys
     }
 
     fun basicKeys(): Array<String> {
