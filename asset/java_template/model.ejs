@@ -1,4 +1,4 @@
-package com.lear.domain.model
+package com.hb.domain.model
 
 import com.fly.base.core.Core
 import com.fly.base.exception.NotExistsException
@@ -29,17 +29,6 @@ class <%= modelName %> : BaseModel() {
 
     fun detailKeys(): Array<String> {
         return arrayOf(<%- fieldString %>)
-    }
-
-    override fun process(model: Any, keys: Array<String>?): Map<String, Any>? {
-        val map = Core.processModel(model, keys)
-
-        if (map != null)
-        {
-
-        }
-
-        return map
     }
 
     companion object {

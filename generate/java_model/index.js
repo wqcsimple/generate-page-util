@@ -2,8 +2,8 @@
  * @author whis admin@wwhis.com
  * @Created 2/23/18
  */
-const Log = require('../lib/logger');
-const Util = require('../lib/util');
+const Log = require('../../lib/logger');
+const Util = require('../../lib/util');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const Sequelize = require('sequelize');
@@ -62,18 +62,18 @@ function generateModel(dbConfig) {
     }
 
     Log.i("db config %s", globalDbCfg);
-
+    
     let modelPath = globalDbCfg.writePath + "/model"; // model类保存路径
-    let modelTemplateEjs = `${__dirname}/../asset/java_template/model.ejs`;
+    let modelTemplateEjs = `${__dirname}/../../asset/java_template/model.ejs`;
 
     let controllerPath = globalDbCfg.writePath + "/controller";
-    let controllerTemplateEjs = `${__dirname}/../asset/java_template/controller.ejs`;
+    let controllerTemplateEjs = `${__dirname}/../../asset/java_template/controller.ejs`;
 
     let servicePath = globalDbCfg.writePath + "/service";
-    let serviceTemplateEjs = `${__dirname}/../asset/java_template/service.ejs`;
+    let serviceTemplateEjs = `${__dirname}/../../asset/java_template/service.ejs`;
 
     let mapperPath = globalDbCfg.writePath + "/mapper";
-    let mapperTemplateEjs = `${__dirname}/../asset/java_template/mapper.ejs`;
+    let mapperTemplateEjs = `${__dirname}/../../asset/java_template/mapper.ejs`;
 
     Util.rmdirSync(modelPath);
     Util.rmdirSync(controllerPath);
@@ -259,8 +259,8 @@ and
         let mysqlConnection = mysqlFun.init();
 
         return mysqlConnection.query(`
-            SELECT COLUMN_NAME as cn, DATA_TYPE as dt, column_comment as cc 
-            FROM information_schema.COLUMNS 
+            SELECT COLUMN_NAME as cn, DATA_TYPE as dt, column_comment as cc
+            FROM information_schema.COLUMNS
             WHERE TABLE_SCHEMA = "${globalDbCfg.database}" and TABLE_NAME = "${table}" ORDER BY ORDINAL_POSITION ASC `, {type: Sequelize.QueryTypes.SELECT})
             .then(resList => {
 

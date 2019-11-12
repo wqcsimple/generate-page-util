@@ -8,8 +8,8 @@ let dbConfig = {
     host: "db",
     user: "root",
     password: "7",
-    database: "lear-api",
-    table: ['merchant_pay_apply'],
+    database: "hb-api",
+    table: ['hw_device_data'],
     writePath: `${__dirname}/ejs`
 };
 

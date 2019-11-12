@@ -2,8 +2,8 @@
  * @author whis admin@wwhis.com
  * @Created 11/30/18
  */
-const Log = require('../lib/logger');
-const Util = require('../lib/util');
+const Log = require('../../lib/logger');
+const Util = require('../../lib/util');
 const fs   = require('fs');
 const mkdirp    = require('mkdirp');
 const request = require("request");
@@ -62,7 +62,7 @@ function generateApi(config) {
             let paths = swaggerJson.paths;
             processPaths(paths);
 
-            let templatePath = `${__dirname}/../asset/js_api_template/api.ejs`;
+            let templatePath = `${__dirname}/../../asset/js_api_template/api.ejs`;
             return Util.renderTemplate(templatePath, {tagList: tagList})
         })
         .then(renderData => {

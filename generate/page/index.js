@@ -6,8 +6,8 @@ const fs        = require('fs');
 const path      = require('path');
 const mkdirp    = require('mkdirp');
 const colors    = require('colors');
-const Util      = require('../lib/util');
-const Log       = require('../lib/logger');
+const Util      = require('../../lib/util');
+const Log       = require('../../lib/logger');
 
 // colors config
 colors.setTheme({
