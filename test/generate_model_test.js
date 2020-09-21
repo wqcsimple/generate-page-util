@@ -8,8 +8,8 @@ let dbConfig = {
     host: "db",
     user: "root",
     password: "7",
-    database: "hb-api",
-    table: ['hw_device_data'],
+    database: "supervision_api",
+    table: ['call_event_log', 'call_record_log'],
     writePath: `${__dirname}/ejs`
 };
 
