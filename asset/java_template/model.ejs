@@ -1,10 +1,12 @@
-package com.hb.domain.model
+package com.phm.api.model
 
-import com.fly.base.core.Core
-import com.fly.base.exception.NotExistsException
-import com.fly.base.model.Model
-import com.fly.base.model.BaseModel
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.dix.base.core.Core
+import com.dix.base.db.model.BaseModel
+import com.dix.base.db.model.Column
+import com.dix.base.db.model.Model
+import com.dix.base.db.model.ModelJsonSerializer
+import com.dix.base.exception.NotExistsException
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
 /**
 *  <%= tableComment %>
