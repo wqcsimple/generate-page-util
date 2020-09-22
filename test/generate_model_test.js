@@ -4,12 +4,21 @@
  */
 const generateModel = require('../index').generateModel;
 
+// let dbConfig = {
+//     host: "db",
+//     user: "root",
+//     password: "7",
+//     database: "supervision_api",
+//     table: ['case_call_log'],
+//     writePath: `${__dirname}/ejs`
+// };
+
 let dbConfig = {
-    host: "db",
-    user: "root",
-    password: "7",
-    database: "supervision_api",
-    table: ['call_event_log', 'call_record_log'],
+    host: "106.14.135.129",
+    user: "dev",
+    password: "rDbKU6Qy4XhwKpKl",
+    database: "phm_api",
+    table: ['user'],
     writePath: `${__dirname}/ejs`
 };
 

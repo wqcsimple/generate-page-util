@@ -8,32 +8,16 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 /**
 *  <%= tableComment %>
+*  created by whis
 */
 @Model(tableName = "<%= tableName %>")
+@JsonSerialize(using = ModelJsonSerializer::class)
 class <%= modelName %> : BaseModel() {
 
-    <% fieldList.forEach(function (item) { %>@get:JsonProperty("<%= item['jsonName'] %>") var <%= item['modelName'] %>: <%= item['dataType'] %> = <%- item['dataTypeValue'] %> <% if (item['comment']) { %> // <%= item["comment"] %> <% } %>
+    <% fieldList.forEach(function (item) { %>@Column("<%= item['jsonName'] %>") var <%= item['modelName'] %>: <%= item['dataType'] %> = <%- item['dataTypeValue'] %> <% if (item['comment']) { %> // <%= item["comment"] %> <% } %>
     <% }); %>
 
-    override fun ID(): Long? {
-        return id
-    }
-
-    override fun keys(): Array<String> {
-        return keys
-    }
-
-    fun basicKeys(): Array<String> {
-        return keys
-    }
-
-    fun detailKeys(): Array<String> {
-        return arrayOf(<%- fieldString %>)
-    }
-
     companion object {
-
-        val keys = arrayOf(<%- fieldString %>)
 
         fun findById(id: Long): <%= modelName %>? {
             return Core.Q().findById(<%= modelName %>::class.java, id)
