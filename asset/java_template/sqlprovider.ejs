@@ -1,6 +1,22 @@
 package com.hb.client.mapper.sqlprovider
 
+import org.apache.commons.lang3.StringUtils
+
 class <%= modelName %>SqlProvider {
 
+    fun select<%= modelName %>List(params: HashMap<String, Any>): String {
+        val po = params["po"] as <%= modelName %>
+        val limitSql = params["limitSql"] as String
 
+        val sql = StringBuilder()
+        if (limitSql.isEmpty()) {
+            sql.append(" select count(*) ")
+        } else {
+            sql.append(" select * ")
+        }
+        sql.append(" from <%= tableName %> ")
+        sql.append(" where weight >= 0 ")
+        sql.append(" order by id desc ")
+        return sql.toString() + StringUtils.defaultString(limitSql, StringUtils.EMPTY)
+    }
 }

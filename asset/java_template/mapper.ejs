@@ -1,6 +1,5 @@
-package com.hb.client.mapper
+package com.phm.api.mapper
 
-import com.fly.base.mybatis.sqlprovider.SqlProvider
 import org.apache.ibatis.annotations.Mapper
 import org.springframework.stereotype.Component
 import org.apache.ibatis.annotations.Param
@@ -10,6 +9,5 @@ import org.apache.ibatis.annotations.SelectProvider
 @Component
 interface <%= modelName %>Mapper {
 
-    @SelectProvider(type = SqlProvider::class, method = "select")
-    fun select(@Param("condition") condition: Any, @Param("otherCondition") otherCondition: String?): List<<%= modelName %>>
+
 }
