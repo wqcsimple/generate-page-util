@@ -37,12 +37,12 @@ function generateModel(dbConfig) {
     Log.e('db config is not set')
     return false
   }
-  
+
   if (typeof dbConfig !== 'object') {
     Log.e('options must be a object.')
     return false
   }
-  
+
   let cfg = {
     host: dbConfig.host,
     user: dbConfig.user,
@@ -51,58 +51,39 @@ function generateModel(dbConfig) {
     table: dbConfig.table,
     writePath: dbConfig.writePath
   }
-  
+
   cfg.port = dbConfig.port || 3306
-  
+
   globalDbCfg = Object.assign(globalDbCfg, cfg)
-  
+
   let table = globalDbCfg.table
   if (typeof table === 'string') {
     globalDbCfg.table = [globalDbCfg.table]
   }
-  
+
   Log.i('db config %s', globalDbCfg)
-  
-  let modelPath = globalDbCfg.writePath + '/model' // model类保存路径
-  let modelTemplateEjs = `${__dirname}/../../asset/java_template/model.ejs`
-  
-  let controllerPath = globalDbCfg.writePath + '/controller'
-  let controllerTemplateEjs = `${__dirname}/../../asset/java_template/controller.ejs`
-  
-  let servicePath = globalDbCfg.writePath + '/service'
-  let serviceTemplateEjs = `${__dirname}/../../asset/java_template/service.ejs`
-  
-  let mapperPath = globalDbCfg.writePath + '/mapper'
-  let mapperTemplateEjs = `${__dirname}/../../asset/java_template/mapper.ejs`
-  
-  let sqlProviderPath = globalDbCfg.writePath + '/mapper/sqlprovider'
-  let sqlProviderTemplateEjs = `${__dirname}/../../asset/java_template/sqlprovider.ejs`
-  
-  Util.rmdirSync(modelPath)
-  Util.rmdirSync(controllerPath)
-  Util.rmdirSync(servicePath)
-  Util.rmdirSync(mapperPath)
-  Util.rmdirSync(sqlProviderPath)
-  if (!fs.existsSync(modelPath)) {
-    mkdirp.sync(modelPath)
+
+  let {writePath} = globalDbCfg;
+
+  let {path: modelPath, templatePath: modelTemplateEjs} = modelFun.genFilePath(writePath, 'model')
+  let {path: voPath, templatePath: voTemplateEjs} = modelFun.genFilePath(writePath, 'vo')
+  let {path: poPath, templatePath: poTemplateEjs} = modelFun.genFilePath(writePath, 'po')
+  let {path: controllerPath, templatePath: controllerTemplateEjs} = modelFun.genFilePath(writePath, 'controller')
+  let {path: servicePath, templatePath: serviceTemplateEjs} = modelFun.genFilePath(writePath, 'service')
+  let {path: mapperPath, templatePath: mapperTemplateEjs} = modelFun.genFilePath(writePath, 'mapper')
+  let {path: sqlProviderPath, templatePath: sqlProviderTemplateEjs} = modelFun.genFilePath(writePath, 'sqlprovider')
+
+  let toRemovePathList = [modelPath, voPath, poPath, poPath, controllerPath, servicePath, mapperPath, sqlProviderPath]
+
+  for (const path of toRemovePathList) {
+    Util.rmdirSync(path)
+    modelFun.checkFilePathExists(path)
   }
-  if (!fs.existsSync(controllerPath)) {
-    mkdirp.sync(controllerPath)
-  }
-  if (!fs.existsSync(servicePath)) {
-    mkdirp.sync(servicePath)
-  }
-  if (!fs.existsSync(mapperPath)) {
-    mkdirp.sync(mapperPath)
-  }
-  if (!fs.existsSync(sqlProviderPath)) {
-    mkdirp.sync(sqlProviderPath)
-  }
-  
+
   let promiseArr = []
   for (let i in globalDbCfg.table) {
     let table = globalDbCfg.table[i]
-    
+
     let data = {
       tableName: modelFun.getTableName(table),
       modelName: modelFun.getModelName(table),
@@ -113,117 +94,128 @@ function generateModel(dbConfig) {
       controllerPath: modelFun.getControllerPath(table),
       functionName: modelFun.getFunctionName(table)
     }
-    
-    let p =
-      modelFun.getTableComment(table)
-        .then(tableComment => {
-          data.tableComment = tableComment
-          
-          return modelFun.getFieldString(table)
-        })
-        .then(fieldString => {
-          data.fieldString = fieldString
-          
-          return modelFun.getFieldArrList(table)
-        })
-        .then(res => {
-          data.fieldList = res
-          
-          Log.i(data)
-          
-          return Util.renderTemplate(modelTemplateEjs, data)
-        })
-        .then(renderData => {
-          return Util.writeFile(`${modelPath}/${data.modelName}.kt`, renderData, { mode: 0o755 })
-        })
-        .then(res => {
-          Log.i('================ Gen model Success ==================== '.success, table)
-          
-          return Util.renderTemplate(mapperTemplateEjs, data)
-        })
-        .then(renderData => {
-          return Util.writeFile(`${mapperPath}/${data.mapperName}.kt`, renderData, { mode: 0o755 })
-        })
-        .then(res => {
-          Log.i('================ Gen Mapper Success ==================== '.success, table)
-          
-          return Util.renderTemplate(sqlProviderTemplateEjs, data)
-        })
-        .then(renderData => {
-          return Util.writeFile(`${sqlProviderPath}/${data.sqlProviderName}.kt`, renderData, { mode: 0o755 })
-        })
-        .then(res => {
-          Log.i('================ Gen SqlProvider Success ==================== '.success, table)
-          
-          return Util.renderTemplate(serviceTemplateEjs, data)
-        })
-        .then(renderData => {
-          return Util.writeFile(`${servicePath}/${data.serviceName}.kt`, renderData, { mode: 0o755 })
-        })
-        .then(res => {
-          Log.i('================ Gen Service Success ==================== '.success, table)
-          
-          return Util.renderTemplate(controllerTemplateEjs, data)
-        })
-        .then(renderData => {
-          return Util.writeFile(`${controllerPath}/${data.controllerName}.kt`, renderData, { mode: 0o755 })
-        })
-        .then(res => {
-          Log.i('================ Gen Controller Success ==================== '.success, table)
-          return true
-        })
-    // .catch(err => {
-    //     Log.e(err.error)
-    // })
-    
-    promiseArr.push(p)
+
+    let dataPromise = modelFun
+      .getTableComment(table).then(tableComment => {
+        data.tableComment = tableComment
+        return modelFun.getFieldString(table)
+      }).then(fieldString => {
+        data.fieldString = fieldString
+        return modelFun.getFieldArrList(table)
+      }).then(res => {
+        data.fieldList = res
+        return data
+      })
+
+    let modelPromise = dataPromise.then(() => {
+      return Util.renderTemplate(modelTemplateEjs, data)
+    }).then(renderData => {
+      return Util.writeFile(`${modelPath}/${data.modelName}.kt`, renderData, {mode: 0o755})
+    }).then(res => {
+      Log.i('================ Gen model Success ==================== '.success, table)
+      return true;
+    })
+
+    let voPromise = dataPromise.then(() => {
+      return Util.renderTemplate(voTemplateEjs, data)
+    }).then(renderData => {
+      return Util.writeFile(`${voPath}/${data.modelName}VO.kt`, renderData, {mode: 0o755})
+    }).then(res => {
+      Log.i('================ Gen VO Success ==================== '.success, table)
+      return true;
+    })
+
+    let poPromise = dataPromise.then(() => {
+      return Util.renderTemplate(poTemplateEjs, data)
+    }).then(renderData => {
+      return Util.writeFile(`${poPath}/${data.modelName}PO.kt`, renderData, {mode: 0o755})
+    }).then(res => {
+      Log.i('================ Gen VO Success ==================== '.success, table)
+      return true;
+    })
+
+    let mapperPromise = dataPromise.then(() => {
+      return Util.renderTemplate(mapperTemplateEjs, data)
+    }).then(renderData => {
+      return Util.writeFile(`${mapperPath}/${data.mapperName}.kt`, renderData, {mode: 0o755})
+    }).then(res => {
+      Log.i('================ Gen Mapper Success ==================== '.success, table)
+      return true;
+    })
+
+    let sqlProviderPromise = dataPromise.then(() => {
+      return Util.renderTemplate(sqlProviderTemplateEjs, data)
+    }).then(renderData => {
+      return Util.writeFile(`${sqlProviderPath}/${data.sqlProviderName}.kt`, renderData, {mode: 0o755})
+    }).then(res => {
+      Log.i('================ Gen SqlProvider Success ==================== '.success, table)
+      return true;
+    })
+
+    let servicePromise = dataPromise.then(() => {
+      return Util.renderTemplate(serviceTemplateEjs, data)
+    }).then(renderData => {
+      return Util.writeFile(`${servicePath}/${data.serviceName}.kt`, renderData, {mode: 0o755})
+    }).then(res => {
+      Log.i('================ Gen Service Success ==================== '.success, table)
+      return true;
+    })
+
+    let controllerPromise = dataPromise.then(() => {
+      return Util.renderTemplate(controllerTemplateEjs, data)
+    }).then(renderData => {
+      return Util.writeFile(`${controllerPath}/${data.controllerName}.kt`, renderData, {mode: 0o755})
+    }).then(res => {
+      Log.i('================ Gen Controller Success ==================== '.success, table)
+      return true
+    })
+
+    promiseArr.push(modelPromise, voPromise, poPromise, mapperPromise, sqlProviderPromise, servicePromise, controllerPromise)
   }
-  
-  Promise.all(promiseArr).then((result) => {
-    
-    console.log(result)
-    Log.i('------ End ------'.help)
-  }).catch((err) => {
-    Log.e(err)
-  })
-  
+
+  // Promise.all(promiseArr).then((result) => {
+  //   console.info(result)
+  //   Log.i('------ End ------'.help)
+  // }).catch((err) => {
+  //   Log.e(err)
+  // })
+
 }
 
 let modelFun = {
-  
-  getTableName: function(table) {
+  getTableName: function (table) {
     return table.toLocaleLowerCase()
   },
-  
-  getModelName: function(table) {
+
+  getModelName: function (table) {
     return modelFun.formatModelName(table)
   },
-  
-  getMapperName: function(table) {
+
+  getMapperName: function (table) {
     return modelFun.formatModelName(table) + 'Mapper'
   },
-  
-  getSqlProviderName: function(table) {
+
+  getSqlProviderName: function (table) {
     return modelFun.formatModelName(table) + 'SqlProvider'
   },
-  
-  getServiceName: function(table) {
+
+  getServiceName: function (table) {
     return modelFun.formatModelName(table) + 'Service'
   },
-  
-  getControllerName: function(table) {
+
+  getControllerName: function (table) {
     return modelFun.formatModelName(table) + 'Controller'
   },
-  
-  getControllerPath: function(table) {
+
+  getControllerPath: function (table) {
     let arr = table.split('_')
-    
+
     return arr.join('-')
   },
-  
-  getFunctionName: function(modelName) {
+
+  getFunctionName: function (modelName) {
     let arr = modelName.split('_')
-    
+
     arr.map((item, index) => {
       if (index === 0) {
         arr[index] = item.toLowerCase()
@@ -231,29 +223,29 @@ let modelFun = {
         arr[index] = Util.firstUpperCase(item)
       }
     })
-    
+
     return arr.join('')
   },
-  
-  getTableComment: function(table) {
+
+  getTableComment: function (table) {
     let mysqlConnection = mysqlFun.init()
     return mysqlConnection.query(`SELECT TABLE_COMMENT as col FROM information_schema.TABLES
 WHERE
     TABLE_SCHEMA = "${globalDbCfg.database}"
 and
-    TABLE_NAME = "${table}"`, { type: Sequelize.QueryTypes.SELECT })
+    TABLE_NAME = "${table}"`, {type: Sequelize.QueryTypes.SELECT})
       .then(result => {
-        
+
         let fieldArr = []
         result.map(item => {
           fieldArr.push(item['col'])
         })
-        
+
         return fieldArr.join(', ')
       })
   },
-  
-  getFieldString: function(table) {
+
+  getFieldString: function (table) {
     let mysqlConnection = mysqlFun.init()
     return mysqlConnection.query(`select
     concat('"', COLUMN_NAME ,'"') as col
@@ -262,27 +254,27 @@ from
 where
     TABLE_SCHEMA = "${globalDbCfg.database}"
 and
-    TABLE_NAME = "${table}" ORDER BY ORDINAL_POSITION ASC`, { type: Sequelize.QueryTypes.SELECT })
+    TABLE_NAME = "${table}" ORDER BY ORDINAL_POSITION ASC`, {type: Sequelize.QueryTypes.SELECT})
       .then(result => {
-        
+
         let fieldArr = []
         result.map(item => {
           fieldArr.push(item['col'])
         })
-        
+
         return fieldArr.join(', ')
       })
   },
-  
-  getFieldArrList: function(table) {
+
+  getFieldArrList: function (table) {
     let mysqlConnection = mysqlFun.init()
-    
+
     return mysqlConnection.query(`
             SELECT COLUMN_NAME as cn, DATA_TYPE as dt, column_comment as cc
             FROM information_schema.COLUMNS
-            WHERE TABLE_SCHEMA = "${globalDbCfg.database}" and TABLE_NAME = "${table}" ORDER BY ORDINAL_POSITION ASC `, { type: Sequelize.QueryTypes.SELECT })
+            WHERE TABLE_SCHEMA = "${globalDbCfg.database}" and TABLE_NAME = "${table}" ORDER BY ORDINAL_POSITION ASC `, {type: Sequelize.QueryTypes.SELECT})
       .then(resList => {
-        
+
         let dataList = []
         resList.map(item => {
           let obj = {
@@ -292,15 +284,15 @@ and
             dataTypeValue: modelFun.formatDataTypeDeFaultValue(modelFun.formatDataType(item['dt'])),
             comment: item['cc']
           }
-          
+
           dataList.push(obj)
         })
-        
+
         return dataList
       })
   },
-  
-  formatDataType: function(dataType) {
+
+  formatDataType: function (dataType) {
     let typeList = {
       'varchar': 'String',
       'int': 'Int',
@@ -310,11 +302,11 @@ and
       'text': 'String',
       'longtext': 'String'
     }
-    
+
     return typeList[dataType]
   },
-  
-  formatDataTypeDeFaultValue: function(dataType) {
+
+  formatDataTypeDeFaultValue: function (dataType) {
     let valueList = {
       'String': '""',
       'Int': '0',
@@ -323,18 +315,18 @@ and
     }
     return valueList[dataType]
   },
-  
-  formatModelName: function(modelName) {
+
+  formatModelName: function (modelName) {
     let arr = modelName.split('_')
-    
+
     arr.map((item, index) => {
       arr[index] = Util.firstUpperCase(item)
     })
-    
+
     return arr.join('')
   },
-  
-  formatJsonModelName: function(modelName) {
+
+  formatJsonModelName: function (modelName) {
     let arr = modelName.split('_')
     if (arr.length <= 1) {
       return arr.join('')
@@ -343,15 +335,27 @@ and
         arr[i] = Util.firstUpperCase(arr[i])
       }
     }
-    
+
     return arr.join('')
+  },
+
+  genFilePath: function (writePath, pathName) {
+    let path = `${writePath}/${pathName}`
+    let templatePath = `${__dirname}/../../asset/java_template/${pathName}.ejs`
+    return {path, templatePath}
+  },
+
+  checkFilePathExists: function (path) {
+    if (!fs.existsSync(path)) {
+      mkdirp.sync(path)
+    }
   }
-  
+
 }
 
 let mysqlClient = null
 let mysqlFun = {
-  init: function() {
+  init: function () {
     if (mysqlClient == null) {
       mysqlClient = new Sequelize(globalDbCfg.database, globalDbCfg.user, globalDbCfg.password, {
         host: globalDbCfg.host,
@@ -364,7 +368,7 @@ let mysqlFun = {
         }
       })
     }
-    
+
     return mysqlClient
   }
 }

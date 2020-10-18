@@ -18,7 +18,8 @@ let dbConfig = {
   user: "dev",
   password: "rDbKU6Qy4XhwKpKl",
   database: "phm_api",
-  table: ['subscribe_item', 'sys_oper_log', 'sys_login_log'],
+  // table: ['subscribe_item', 'sys_oper_log', 'sys_login_log'],
+  table: ['subscribe_item'],
   writePath: `${__dirname}/ejs`
 };
 
