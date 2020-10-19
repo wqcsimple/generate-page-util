@@ -18,7 +18,7 @@ let dbConfig = {
   user: "dev",
   password: "rDbKU6Qy4XhwKpKl",
   database: "phm_api",
-  table: ['cm_file'],
+  table: ['subscribe_item'],
   writePath: `${__dirname}/ejs`
 };
 

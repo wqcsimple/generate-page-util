@@ -20,24 +20,32 @@ class <%= modelName %>Controller : BaseController() {
     @Autowired
     lateinit var <%= functionName %>Service: <%= modelName %>Service
 
-    @RequestMapping("list", method = [(RequestMethod.GET)])
-    fun list(): DataResponse {
-        return DataResponse.create()
+    @RequestMapping("list", method = [(RequestMethod.POST)])
+    @ApiOperation("<%= tableComment %>列表")
+    fun list(@RequestBody po: <%= modelName %>PO): DataResponse {
+        val data = <%= functionName %>Service.select<%= modelName %>List(po)
+        return DataResponse.create().putAll(data)
     }
 
-    @RequestMapping("detail", method = [(RequestMethod.GET)])
-    fun detail(@RequestParam("id") id: Long): DataResponse {
-        return DataResponse.create()
+    @RequestMapping("detail", method = [(RequestMethod.POST])])
+    @ApiOperation("<%= tableComment %>详情")
+    fun detail(@RequestBody po: <%= modelName %>PO): DataResponse {
+        val data = <%= functionName %>Service.select<%= modelName %>Detail(po)
+        return DataResponse.create().putAll(data)
     }
 
     @RequestMapping("delete", method = [(RequestMethod.POST)])
-    fun delete(@RequestParam("id") id: Long): DataResponse {
+    @ApiOperation("<%= tableComment %>删除")
+    fun delete(@RequestParam("id", defaultValue = "0") id: Long): DataResponse {
+        val data = <%= functionName %>Service.delete<%= modelName %>(id)
         return DataResponse.create()
     }
 
     @RequestMapping("save", method = [(RequestMethod.POST)])
-    fun save(): DataResponse {
-        return DataResponse.create()
+    @ApiOperation("<%= tableComment %>新增或修改")
+    fun save(@RequestBody param: <%= modelName %>Param): DataResponse {
+        val data = <%= functionName %>Service.save<%= modelName %>(param)
+        return DataResponse.create().putAll(data)
     }
 
 }

@@ -9,5 +9,14 @@ import org.apache.ibatis.annotations.SelectProvider
 @Component
 interface <%= modelName %>Mapper {
 
+    @Select("""
+        select * from <%= tableName %> where id = #{id} and weight >= 0
+    """)
+    fun findById(@Param("id") id: Long): <%= modelName %>VO?
 
+    @SelectProvider(type = <%= modelName %>SqlProvider::class, method = "get<%= modelName %>List")
+    fun get<%= modelName %>List(@Param("po") po: <%= modelName %>PO, @Param("limitSql") limitSql: String): List<<%= modelName %>VO>
+
+    @SelectProvider(type = <%= modelName %>SqlProvider::class, method = "get<%= modelName %>List")
+    fun count<%= modelName %>List(@Param("po") po: <%= modelName %>PO, @Param("limitSql") limitSql: String): Int
 }

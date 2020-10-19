@@ -12,7 +12,39 @@ class <%= modelName %>Service {
     @Autowired
     lateinit var <%= functionName %>Mapper: <%= modelName %>Mapper
 
-    fun select(condition: <%= modelName %>, otherCondition: String?): List<<%= modelName %>> {
-        return <%= functionName %>Mapper.select(condition, otherCondition)
+    fun select<%= modelName %>List(po: DevicePO): MutableMap<String, Any>? {
+        val list: List<<%= modelName %>VO> = deviceMapper.selectDeviceList(po, Pagination.limitSql(po.page, po.pageSize))
+
+        val count = deviceMapper.countDeviceList(po, "")
+
+        return hashMapOf(
+            "list" to list,
+            "count" to count
+        )
+    }
+
+    fun select<%= modelName %>Detail(po: <%= modelName %>PO): MutableMap<String, Any>? {
+        val vo = <%= functionName %>Mapper.findById(po.id) ?: throw NotExistsException("未找到对应记录")
+
+        return hashMapOf(
+            "<%= tableName %>" to vo
+        )
+    }
+
+    fun delete<%= modelName %>(po: <%= modelName %>PO) {
+        val <%= functionName %> = Core.Q().findById(<%= modelName %>::class.java, po.id) ?: throw NotExistsException("未找到对应记录")
+
+        <%= functionName %>.delete()
+    }
+
+    fun save<%= modelName %>(param: <%= modelName %>Param) {
+        val <%= functionName %> = <%= modelName %>()
+        BeanUtils.copyProperties(param, <%= functionName %>)
+
+        <%= functionName %>.save()
+
+        return hashMapOf(
+            "<%= tableName %>_id" to <%= modelName %>.id
+        )
     }
 }

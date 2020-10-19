@@ -12,11 +12,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 *  <%= tableComment %>
 *  created by whis
 */
-@Model(tableName = "<%= tableName %>")
-@JsonSerialize(using = ModelJsonSerializer::class)
-class <%= modelName %> : BaseModel() {
+class <%= modelName %>VO {
 
-    <% fieldList.forEach(function (item) { %>@Column("<%= item['jsonName'] %>") var <%= item['modelName'] %>: <%= item['dataType'] %> = <%- item['dataTypeValue'] %> <% if (item['comment']) { %> // <%= item["comment"] %> <% } %>
+    <% fieldList.forEach(function (item) { %>@get:JsonProperty("<%= item['jsonName'] %>") var <%= item['modelName'] %>: <%= item['dataType'] %> = <%- item['dataTypeValue'] %> <% if (item['comment']) { %> // <%= item["comment"] %> <% } %>
     <% }); %>
 
 }
