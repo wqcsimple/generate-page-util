@@ -1,8 +1,9 @@
-package com.phm.api.mapper
+package com.cook.api.mapper
 
 import org.apache.ibatis.annotations.Mapper
 import org.springframework.stereotype.Component
 import org.apache.ibatis.annotations.Param
+import org.apache.ibatis.annotations.Select
 import org.apache.ibatis.annotations.SelectProvider
 
 @Mapper
@@ -15,7 +16,7 @@ interface <%= modelName %>Mapper {
     fun findById(@Param("id") id: Long): <%= modelName %>VO?
 
     @SelectProvider(type = <%= modelName %>SqlProvider::class, method = "get<%= modelName %>List")
-    fun get<%= modelName %>List(@Param("po") po: <%= modelName %>PO, @Param("limitSql") limitSql: String): List<<%= modelName %>VO>
+    fun select<%= modelName %>List(@Param("po") po: <%= modelName %>PO, @Param("limitSql") limitSql: String): List<<%= modelName %>VO>
 
     @SelectProvider(type = <%= modelName %>SqlProvider::class, method = "get<%= modelName %>List")
     fun count<%= modelName %>List(@Param("po") po: <%= modelName %>PO, @Param("limitSql") limitSql: String): Int

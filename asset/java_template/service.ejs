@@ -1,6 +1,11 @@
-package com.hb.client.service
+package com.cook.api.service
 
 import org.springframework.stereotype.Service
+import org.springframework.beans.factory.annotation.Autowired
+import com.dix.base.common.misc.pagination.Pagination
+import com.dix.base.core.Core
+import com.dix.base.exception.NotExistsException
+import org.springframework.beans.BeanUtils
 
 @Service("<%= modelName %>Service")
 class <%= modelName %>Service {
@@ -12,10 +17,10 @@ class <%= modelName %>Service {
     @Autowired
     lateinit var <%= functionName %>Mapper: <%= modelName %>Mapper
 
-    fun select<%= modelName %>List(po: DevicePO): MutableMap<String, Any>? {
-        val list: List<<%= modelName %>VO> = deviceMapper.selectDeviceList(po, Pagination.limitSql(po.page, po.pageSize))
+    fun select<%= modelName %>List(po: <%= modelName %>PO): MutableMap<String, Any>? {
+        val list: List<<%= modelName %>VO> = <%= functionName %>Mapper.select<%= modelName %>List(po, Pagination.limitSql(po.page, po.pageSize))
 
-        val count = deviceMapper.countDeviceList(po, "")
+        val count = <%= functionName %>Mapper.count<%= modelName %>List(po, "")
 
         return hashMapOf(
             "list" to list,
@@ -37,14 +42,14 @@ class <%= modelName %>Service {
         <%= functionName %>.delete()
     }
 
-    fun save<%= modelName %>(param: <%= modelName %>Param) {
+    fun save<%= modelName %>(param: <%= modelName %>Param): HashMap<String, Any> {
         val <%= functionName %> = <%= modelName %>()
         BeanUtils.copyProperties(param, <%= functionName %>)
 
         <%= functionName %>.save()
 
         return hashMapOf(
-            "<%= tableName %>_id" to <%= modelName %>.id
+            "<%= tableName %>_id" to <%= functionName %>.id
         )
     }
 }
