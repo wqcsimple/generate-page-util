@@ -117,6 +117,7 @@ function generateModel(dbConfig) {
     })
 
     let voPromise = dataPromise.then(() => {
+      data.voFieldList = modelFun.filterFieldArrayList(['updateTime', 'weight'], data.fieldList);
       return Util.renderTemplate(voTemplateEjs, data)
     }).then(renderData => {
       return Util.writeFile(`${voPath}/${data.modelName}VO.kt`, renderData, {mode: 0o755})
@@ -126,9 +127,10 @@ function generateModel(dbConfig) {
     })
 
     let poPromise = dataPromise.then(() => {
+      data.poFieldList = modelFun.filterFieldArrayList(['createTime', 'updateTime', 'weight'], data.fieldList);
       return Util.renderTemplate(poTemplateEjs, data)
     }).then(renderData => {
-      return Util.writeFile(`${poPath}/${data.modelName}PO.kt`, renderData, {mode: 0o755})
+      return Util.writeFile(`${poPath}/${data.modelName}SavePO.kt`, renderData, {mode: 0o755})
     }).then(res => {
       Log.i('================ Gen VO Success ==================== '.success, table)
       return true;
@@ -290,6 +292,16 @@ and
 
         return dataList
       })
+  },
+
+  filterFieldArrayList: function (filterVal, fieldArr) {
+      let rst = [];
+      fieldArr.map(v => {
+          if (!Util.inArray(v['modelName'], filterVal)) {
+              return rst.push(v);
+          }
+      })
+      return rst;
   },
 
   formatDataType: function (dataType) {

@@ -9,8 +9,8 @@ import io.swagger.annotations.ApiModelProperty
 *  created by whis
 */
 @ApiModel
-class <%= modelName %>PO : ListPO() {
-    <% fieldList.forEach(function (item) { %><% if (item['comment']) { %>
+class <%= modelName %>SavePO : ListPO() {
+    <% poFieldList.forEach(function (item) { %><% if (item['comment']) { %>
     @ApiModelProperty("<%= item['comment'] %>") <% } %>
     @get:JsonProperty("<%= item['jsonName'] %>") var <%= item['modelName'] %>: <%= item['dataType'] %> = <%- item['dataTypeValue'] %> <% if (item['comment']) { %> // <%= item['comment'] %> <% } %>
     <% }); %>
