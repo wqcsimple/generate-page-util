@@ -17,7 +17,7 @@ class <%= modelName %>Service {
     @Autowired
     lateinit var <%= functionName %>Mapper: <%= modelName %>Mapper
 
-    fun select<%= modelName %>List(po: <%= modelName %>PO): MutableMap<String, Any>? {
+    fun select<%= modelName %>List(po: <%= modelName %>ListPO): MutableMap<String, Any>? {
         val list: List<<%= modelName %>VO> = <%= functionName %>Mapper.select<%= modelName %>List(po, Pagination.limitSql(po.page, po.pageSize))
 
         val count = <%= functionName %>Mapper.count<%= modelName %>List(po, "")
@@ -28,7 +28,7 @@ class <%= modelName %>Service {
         )
     }
 
-    fun select<%= modelName %>Detail(po: <%= modelName %>PO): MutableMap<String, Any>? {
+    fun select<%= modelName %>Detail(po: IdPO): MutableMap<String, Any>? {
         val vo = <%= functionName %>Mapper.findById(po.id) ?: throw NotExistsException("未找到对应记录")
 
         return hashMapOf(
@@ -36,13 +36,13 @@ class <%= modelName %>Service {
         )
     }
 
-    fun delete<%= modelName %>(po: <%= modelName %>PO) {
+    fun delete<%= modelName %>(po: IdPO) {
         val <%= functionName %> = Core.Q().findById(<%= modelName %>::class.java, po.id) ?: throw NotExistsException("未找到对应记录")
 
         <%= functionName %>.delete()
     }
 
-    fun save<%= modelName %>(param: <%= modelName %>Param): HashMap<String, Any> {
+    fun save<%= modelName %>(param: <%= modelName %>SavePO): HashMap<String, Any> {
         val <%= functionName %> = <%= modelName %>()
         BeanUtils.copyProperties(param, <%= functionName %>)
 

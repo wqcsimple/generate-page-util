@@ -66,14 +66,16 @@ function generateModel(dbConfig) {
   let {writePath} = globalDbCfg;
 
   let {path: modelPath, templatePath: modelTemplateEjs} = modelFun.genFilePath(writePath, 'model')
+  let {path: flyModelPath, templatePath: flyModelTemplateEjs} = modelFun.genFilePath(writePath, 'flymodel')
   let {path: voPath, templatePath: voTemplateEjs} = modelFun.genFilePath(writePath, 'vo')
   let {path: poPath, templatePath: poTemplateEjs} = modelFun.genFilePath(writePath, 'po')
+  let {path: listPoPath, templatePath: listPoTemplateEjs} = modelFun.genFilePath(writePath, 'listpo')
   let {path: controllerPath, templatePath: controllerTemplateEjs} = modelFun.genFilePath(writePath, 'controller')
   let {path: servicePath, templatePath: serviceTemplateEjs} = modelFun.genFilePath(writePath, 'service')
   let {path: mapperPath, templatePath: mapperTemplateEjs} = modelFun.genFilePath(writePath, 'mapper')
   let {path: sqlProviderPath, templatePath: sqlProviderTemplateEjs} = modelFun.genFilePath(writePath, 'sqlprovider')
 
-  let toRemovePathList = [modelPath, voPath, poPath, poPath, controllerPath, servicePath, mapperPath, sqlProviderPath]
+  let toRemovePathList = [modelPath, voPath, poPath, controllerPath, servicePath, mapperPath, sqlProviderPath]
 
   for (const path of toRemovePathList) {
     Util.rmdirSync(path)
@@ -116,6 +118,16 @@ function generateModel(dbConfig) {
       return true;
     })
 
+    let flyModelPromise = dataPromise.then(() => {
+      data.voFieldList = modelFun.filterFieldArrayList(['createTime', 'updateTime', 'weight', 'isDel', 'createDate', 'updateDate'], data.fieldList);
+      return Util.renderTemplate(flyModelTemplateEjs, data)
+    }).then(renderData => {
+      return Util.writeFile(`${modelPath}/${data.modelName}.kt.bak`, renderData, {mode: 0o755})
+    }).then(res => {
+      Log.i('================ Gen model Success ==================== '.success, table)
+      return true;
+    })
+
     let voPromise = dataPromise.then(() => {
       data.voFieldList = modelFun.filterFieldArrayList(['updateTime', 'weight'], data.fieldList);
       return Util.renderTemplate(voTemplateEjs, data)
@@ -131,6 +143,16 @@ function generateModel(dbConfig) {
       return Util.renderTemplate(poTemplateEjs, data)
     }).then(renderData => {
       return Util.writeFile(`${poPath}/${data.modelName}SavePO.kt`, renderData, {mode: 0o755})
+    }).then(res => {
+      Log.i('================ Gen VO Success ==================== '.success, table)
+      return true;
+    })
+
+    let listPromise = dataPromise.then(() => {
+      data.poFieldList = modelFun.filterFieldArrayList(['createTime', 'updateTime', 'weight'], data.fieldList);
+      return Util.renderTemplate(listPoTemplateEjs, data)
+    }).then(renderData => {
+      return Util.writeFile(`${poPath}/${data.modelName}ListPO.kt`, renderData, {mode: 0o755})
     }).then(res => {
       Log.i('================ Gen VO Success ==================== '.success, table)
       return true;
@@ -172,7 +194,7 @@ function generateModel(dbConfig) {
       return true
     })
 
-    promiseArr.push(modelPromise, voPromise, poPromise, mapperPromise, sqlProviderPromise, servicePromise, controllerPromise)
+    promiseArr.push(modelPromise, flyModelPromise, voPromise, poPromise, listPromise, mapperPromise, sqlProviderPromise, servicePromise, controllerPromise)
   }
 
   // Promise.all(promiseArr).then((result) => {
@@ -295,13 +317,13 @@ and
   },
 
   filterFieldArrayList: function (filterVal, fieldArr) {
-      let rst = [];
-      fieldArr.map(v => {
-          if (!Util.inArray(v['modelName'], filterVal)) {
-              return rst.push(v);
-          }
-      })
-      return rst;
+    let rst = [];
+    fieldArr.map(v => {
+      if (!Util.inArray(v['modelName'], filterVal)) {
+        return rst.push(v);
+      }
+    })
+    return rst;
   },
 
   formatDataType: function (dataType) {
@@ -312,9 +334,9 @@ and
       'bigint': 'Long',
       'double': 'Double',
       'text': 'String',
-      'longtext': 'String'
+      'longtext': 'String',
+      'datetime': 'Date?'
     }
-
     return typeList[dataType]
   },
 
@@ -323,7 +345,8 @@ and
       'String': '""',
       'Int': '0',
       'Long': '0L',
-      'Double': '0.0'
+      'Double': '0.0',
+      'Date?': 'null'
     }
     return valueList[dataType]
   },

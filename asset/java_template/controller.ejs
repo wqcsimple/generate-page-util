@@ -20,28 +20,28 @@ class <%= modelName %>Controller : CoreController() {
 
     @RequestMapping("list", method = [(RequestMethod.POST)])
     @ApiOperation("<%= tableComment %>列表")
-    fun list(@RequestBody po: <%= modelName %>PO): DataResponse {
+    fun list(@RequestBody po: <%= modelName %>ListPO): DataResponse {
         val data = <%= functionName %>Service.select<%= modelName %>List(po)
         return DataResponse.create().putAll(data)
     }
 
     @RequestMapping("detail", method = [(RequestMethod.POST)])
     @ApiOperation("<%= tableComment %>详情")
-    fun detail(@RequestBody po: <%= modelName %>PO): DataResponse {
+    fun detail(@RequestBody po: IdPO): DataResponse {
         val data = <%= functionName %>Service.select<%= modelName %>Detail(po)
         return DataResponse.create().putAll(data)
     }
 
     @RequestMapping("delete", method = [(RequestMethod.POST)])
     @ApiOperation("<%= tableComment %>删除")
-    fun delete(@RequestBody po: <%= modelName %>PO): DataResponse {
+    fun delete(@RequestBody po: IdPO): DataResponse {
         <%= functionName %>Service.delete<%= modelName %>(po)
         return DataResponse.create()
     }
 
     @RequestMapping("save", method = [(RequestMethod.POST)])
     @ApiOperation("<%= tableComment %>新增或修改")
-    fun save(@RequestBody param: <%= modelName %>Param): DataResponse {
+    fun save(@RequestBody param: <%= modelName %>SavePO): DataResponse {
         val data = <%= functionName %>Service.save<%= modelName %>(param)
         return DataResponse.create().putAll(data)
     }

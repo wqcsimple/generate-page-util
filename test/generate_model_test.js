@@ -17,8 +17,8 @@ let dbConfig = {
   host: '106.14.135.129',
   user: 'dev',
   password: 'rDbKU6Qy4XhwKpKl',
-  database: 'cook_robot',
-  table: ['account'],
+  database: 'delivery-api',
+  table: ['txd_user'],
   writePath: `${__dirname}/ejs`
 }
 

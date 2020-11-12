@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils
 class <%= modelName %>SqlProvider {
 
     fun select<%= modelName %>List(params: HashMap<String, Any>): String {
-        val po = params["po"] as <%= modelName %>PO
+        val po = params["po"] as <%= modelName %>ListPO
         val limitSql = params["limitSql"] as String
 
         val sql = StringBuilder()

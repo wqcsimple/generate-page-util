@@ -1,0 +1,17 @@
+package com.cook.api.model
+
+import com.fly.base.model.BaseModel
+import com.fly.base.model.TableField
+import com.fly.base.model.TableModel
+
+/**
+*  <%= tableComment %>
+*  created by whis
+*/
+@TableModel(tableName = "<%= tableName %>")
+open class <%= modelName %> : BaseModel() {
+
+    <% voFieldList.forEach(function (item) { %>@TableField var <%= item['modelName'] %>: <%= item['dataType'] %> = <%- item['dataTypeValue'] %> <% if (item['comment']) { %> // <%= item["comment"] %> <% } %>
+    <% }); %>
+
+}
