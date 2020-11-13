@@ -15,9 +15,9 @@ interface <%= modelName %>Mapper {
     """)
     fun findById(@Param("id") id: Long): <%= modelName %>VO?
 
-    @SelectProvider(type = <%= modelName %>SqlProvider::class, method = "get<%= modelName %>List")
+    @SelectProvider(type = <%= modelName %>SqlProvider::class, method = "select<%= modelName %>List")
     fun select<%= modelName %>List(@Param("po") po: <%= modelName %>ListPO, @Param("limitSql") limitSql: String): List<<%= modelName %>VO>
 
-    @SelectProvider(type = <%= modelName %>SqlProvider::class, method = "get<%= modelName %>List")
+    @SelectProvider(type = <%= modelName %>SqlProvider::class, method = "select<%= modelName %>List")
     fun count<%= modelName %>List(@Param("po") po: <%= modelName %>ListPO, @Param("limitSql") limitSql: String): Int
 }
