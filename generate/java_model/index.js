@@ -75,7 +75,13 @@ function generateModel(dbConfig) {
   let {path: mapperPath, templatePath: mapperTemplateEjs} = modelFun.genFilePath(writePath, 'mapper')
   let {path: sqlProviderPath, templatePath: sqlProviderTemplateEjs} = modelFun.genFilePath(writePath, 'sqlprovider')
 
-  let toRemovePathList = [modelPath, voPath, poPath, controllerPath, servicePath, mapperPath, sqlProviderPath]
+  // vue
+  let {path: vueListPath, templatePath: vueListTemplateEjs} = modelFun.genVueFilePath(writePath, 'list')
+
+  let toRemovePathList = [modelPath, voPath, poPath, controllerPath, servicePath, mapperPath, sqlProviderPath,
+    // vue template
+    vueListPath
+  ]
 
   for (const path of toRemovePathList) {
     Util.rmdirSync(path)
@@ -94,7 +100,7 @@ function generateModel(dbConfig) {
       serviceName: modelFun.getServiceName(table),
       controllerName: modelFun.getControllerName(table),
       controllerPath: modelFun.getControllerPath(table),
-      functionName: modelFun.getFunctionName(table)
+      functionName: modelFun.getFunctionName(table),
     }
 
     let dataPromise = modelFun
@@ -194,7 +200,19 @@ function generateModel(dbConfig) {
       return true
     })
 
-    promiseArr.push(modelPromise, flyModelPromise, voPromise, poPromise, listPromise, mapperPromise, sqlProviderPromise, servicePromise, controllerPromise)
+    // vue template
+    let vueListPromise = dataPromise.then(() => {
+      return Util.renderTemplate(vueListTemplateEjs, data)
+    }).then(renderData => {
+      return Util.writeFile(`${vueListPath}/list.kt`, renderData, {mode: 0o755})
+    }).then(res => {
+      Log.i('================ Gen Vue List Success ==================== '.success, table)
+      return true
+    })
+
+    promiseArr.push(modelPromise, flyModelPromise, voPromise, poPromise, listPromise, mapperPromise, sqlProviderPromise, servicePromise, controllerPromise,
+      vueListPromise
+      )
   }
 
   // Promise.all(promiseArr).then((result) => {
@@ -377,6 +395,12 @@ and
   genFilePath: function (writePath, pathName) {
     let path = `${writePath}/${pathName}`
     let templatePath = `${__dirname}/../../asset/java_template/${pathName}.ejs`
+    return {path, templatePath}
+  },
+
+  genVueFilePath: function (writePath, pathName) {
+    let path = `${writePath}/${pathName}`
+    let templatePath = `${__dirname}/../../asset/vue_template/${pathName}.ejs`
     return {path, templatePath}
   },
 
