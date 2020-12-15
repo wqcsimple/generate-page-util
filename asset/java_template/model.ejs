@@ -17,4 +17,7 @@ class <%= modelName %> : BaseModel() {
     <% fieldList.forEach(function (item) { %>@Column("<%= item['jsonName'] %>") var <%= item['modelName'] %>: <%= item['dataType'] %> = <%- item['dataTypeValue'] %> <% if (item['comment']) { %> // <%= item["comment"] %> <% } %>
     <% }); %>
 
+    companion object {
+        val keys = arrayOf(<%- fieldString %>)
+    }
 }
